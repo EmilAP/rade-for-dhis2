@@ -40,7 +40,7 @@ Start on the **Rabies Intake** tab, empty state.
 
 **Say:**
 
-> The workflow is based on the **World Health Organization Regional Office for South-East Asia**, or **WHO SEARO**, rabies PEP decision tree. The app also includes a **UK Health Security Agency**, or **UKHSA**, terrestrial mammal country-risk overlay, while bat lyssavirus context is handled separately and remains local-guidance dependent.
+> The demo intake and decision workflow is based on the **WHO Regional Office for South-East Asia (WHO SEARO)** rabies PEP decision tree and is broadly consistent with WHO global rabies PEP principles, although final use should be configured to local policy. The app also includes a **UK Health Security Agency (UKHSA)** terrestrial mammal country-risk overlay, while bat lyssavirus context is handled separately and remains local-guidance dependent.
 
 **Screen:**
 

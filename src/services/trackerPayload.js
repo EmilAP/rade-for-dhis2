@@ -84,7 +84,7 @@ const buildAssessmentFromDecision = (decisionResult) => ({
             decisionResult.outcome?.headline || 'Manual review required.',
             decisionResult.rationale,
             `Matched rule: ${decisionResult.matchedRule?.id || 'none'}`,
-            'WHO SEARO-aligned decision support; reconcile with local public health policy.',
+            'Basis: WHO SEARO decision tree; local policy governs operational use.',
         ].filter(Boolean),
     },
     recommended_actions: decisionResult.recommendedActions || [],
@@ -182,7 +182,7 @@ export const buildLocalDemoOutput = (
                 notes: [
                     {
                         value:
-                            'WHO SEARO-aligned decision support for demonstration/workflow support. Reconcile with local public health policy.',
+                            'Demo decision support. Local policy and governance review required before operational use.',
                     },
                 ],
             },

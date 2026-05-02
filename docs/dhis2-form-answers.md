@@ -18,7 +18,7 @@ Do not select External Service unless a deployed external backend service is add
 
 ## Under-300-character description
 
-RaDE for DHIS2 is an installable DHIS2 App Platform app for rabies exposure decision support: structured intake, WHO SEARO-aligned rules, rationale, task suggestions, metadata readiness checks, and Tracker-compatible outputs.
+RaDE for DHIS2 is an installable DHIS2 App Platform app for rabies exposure decision support: structured intake, WHO SEARO-aligned rules, missing-field prompts, metadata readiness checks, and Tracker-compatible outputs.
 
 ## Contributors
 
@@ -60,7 +60,7 @@ The app uses deterministic local rule-based decision support and does not requir
 
 ## Screenshot suggestions
 
-- First screen showing **RaDE for DHIS2**, **Rabies exposure decision support for DHIS2 Tracker**, and reviewer badges.
+- First screen showing **RaDE for DHIS2**, **Rabies exposure decision support for DHIS2 Tracker**, the concise demo decision-support banner, and reviewer badges.
 - Rabies Intake page after loading the sample scenario, including live decision support.
 - Demo Output / Tracker Payload page showing recommendation and payload readiness warning.
 - Metadata Mapping / Readiness page showing placeholder checks.

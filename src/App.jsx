@@ -31,24 +31,21 @@ const pages = [
     { id: 'submission', label: 'Competition Notes' },
 ]
 
-const disclaimer =
-    'This tool provides WHO SEARO-aligned rabies PEP decision support for demonstration and workflow support. Final management should follow local public health policy and clinical judgment.'
-
-const demoNotice =
-    'This demo runs locally in the DHIS2 app and does not send identifiable data to external AI services. Production deployment requires local DHIS2 metadata mapping and local policy review.'
+const safetyNotice =
+    'Demo decision support only. Uses local rule-based logic; no external AI service is required. Production use requires local DHIS2 metadata mapping, policy review, and clinical/public-health governance.'
 
 const valueCards = [
     {
         title: 'Assess exposure',
-        text: 'Capture structured exposure, wound, animal, country, and patient context.',
+        text: 'Capture exposure, animal, wound, country, and patient context.',
     },
     {
         title: 'Review decision support',
-        text: 'Surface missing information, rationale, risk signals, and suggested follow-up tasks.',
+        text: 'Show recommendation status, rationale, missing fields, and suggested actions.',
     },
     {
-        title: 'Generate DHIS2 Tracker output',
-        text: 'Preview Tracker-compatible payloads and validate local metadata readiness.',
+        title: 'Generate Tracker output',
+        text: 'Preview Tracker-compatible payloads and metadata readiness.',
     },
 ]
 
@@ -68,14 +65,32 @@ const evidenceReferences = [
 ]
 
 const evidenceScopeNote =
-    'The WHO SEARO PDF is used as the basis for the demo rabies PEP decision-tree workflow. The UKHSA table applies to terrestrial animals and is used as a country/animal risk overlay. Bat lyssavirus risks are handled separately and should be reviewed with local public health guidance. Check the live GOV.UK source periodically because country-risk data may change.'
+    'WHO SEARO provides the demo decision-tree basis. UKHSA is used only as a terrestrial mammal country-risk overlay. Bat lyssavirus context is separate and local-guidance dependent.'
+
+const evidenceSummary =
+    'Decision workflow: WHO SEARO rabies PEP decision tree. Country-risk overlay: UKHSA terrestrial mammal rabies risk by country.'
 
 const operationalLimits = [
     'Recommendations are decision support, not final production clinical automation.',
-    'Local public health policy, clinical judgment, and clinical/public-health review remain required before management decisions.',
     'DHIS2 Tracker payloads use scaffold metadata until local program, stage, data element, attribute, and org unit UIDs are mapped.',
     'Validation mode is provided for review; live import should wait until placeholder IDs are removed and local governance signs off.',
 ]
+
+const derivedFieldLabels = {
+    animal_is_dog_cat_or_domestic_ferret: 'Dog/cat/domestic ferret',
+    animal_is_mammal: 'Animal is a mammal',
+    animal_is_rodent: 'Animal is a rodent',
+    w01: 'Animal is a mammal',
+    w02: 'Animal is a rodent',
+    w03: 'Animal is dog/cat/domestic ferret',
+    w04: 'High-priority patient factor',
+    w05: 'WHO exposure category',
+    ukhsa_country_terrestrial_mammal_rabies_risk_level: 'Country-risk level',
+    ukhsa_country_terrestrial_mammal_rabies_risk_code: 'Country-risk code',
+    ukhsa_country_terrestrial_mammal_rabies_risk_note: 'Country-risk note',
+    bat_lyssavirus_special_context: 'Bat lyssavirus context',
+    animal_is_bat: 'Bat exposure',
+}
 
 const formatJson = (value) => JSON.stringify(value, null, 2)
 
@@ -102,17 +117,18 @@ const severityClass = (severity) => {
     return classes.severityGrey
 }
 
-const SafetyNotice = ({ compact = false }) => (
-    <div className={`${classes.safetyNotice} ${compact ? classes.safetyNoticeCompact : ''}`}>
-        <strong>Decision-support scope:</strong> {disclaimer}
+const SafetyNotice = () => (
+    <div className={classes.safetyNotice}>
+        {safetyNotice}
     </div>
 )
 
-const DemoNotice = () => <div className={classes.demoNotice}>{demoNotice}</div>
-
 const EvidencePanel = () => (
-    <details open className={classes.evidencePanel}>
-        <summary>Evidence and reference data</summary>
+    <details className={classes.evidencePanel}>
+        <summary>
+            <span>Evidence and scope</span>
+            <small>{evidenceSummary}</small>
+        </summary>
         <div className={classes.evidenceGrid}>
             {evidenceReferences.map((reference) => (
                 <div key={reference.label} className={classes.evidenceItem}>
@@ -135,6 +151,18 @@ const LimitationsList = () => (
         ))}
     </ul>
 )
+
+const getHelperText = (question) => {
+    const note = question.inline_notes?.[0]
+    if (!note) return null
+    if (note.includes('healthy 10 days after exposure')) {
+        return 'Dogs, cats, and domestic ferrets: healthy at 10 days indicates no rabies risk. Other animals may need 14-day investigation.'
+    }
+    return note
+        .replace(/ and local public health review/gi, '')
+        .replace(/ and should be handled through bat exposure guidance/gi, '')
+        .replace(/ should be handled through bat exposure guidance/gi, '')
+}
 
 const QuestionInput = ({ question, value, onChange }) => {
     const options = getQuestionOptions(question)
@@ -297,7 +325,7 @@ const getDecisionStatus = (decisionResult) => {
 
 const getDecisionHeadline = (decisionResult) => {
     if (decisionResult.outcome?.code === 'INSUFFICIENT_INFORMATION') {
-        return 'More exposure details are needed before a rabies PEP recommendation can be produced.'
+        return 'Complete the highlighted missing fields to resolve the WHO SEARO decision path.'
     }
     return decisionResult.outcome?.headline || 'Manual review required.'
 }
@@ -305,15 +333,14 @@ const getDecisionHeadline = (decisionResult) => {
 const getDecisionActions = (decisionResult) => {
     if (decisionResult.outcome?.code === 'INSUFFICIENT_INFORMATION') {
         return [
-            'Complete required exposure and animal fields.',
-            'Confirm WHO wound/exposure category.',
-            'Review animal availability/testing information.',
-            'Validate DHIS2 metadata mapping before write-back.',
+            'Complete missing exposure and animal fields.',
+            'Confirm wound/exposure category.',
+            'Check metadata readiness before DHIS2 write-back.',
         ]
     }
     return decisionResult.recommendedActions?.length
         ? decisionResult.recommendedActions
-        : ['Review the intake with local public health guidance before acting.']
+        : ['Review the intake before acting.']
 }
 
 const getRiskSignals = (decisionResult, questionsById = {}) => {
@@ -333,7 +360,7 @@ const getRiskSignals = (decisionResult, questionsById = {}) => {
         )
     }
     if (decisionResult.derivedValues.animal_is_bat) {
-        signals.push('Bat exposure context: review separate bat lyssavirus guidance and local policy.')
+        signals.push('Bat exposure context: separate bat lyssavirus guidance applies.')
     }
     if (animalAvailable) signals.push(`Animal availability: ${valueLabel(questionsById.c23 || questionsById.c25 || {}, animalAvailable)}`)
     if (testingStatus) signals.push(`Animal testing status: ${valueLabel(questionsById.c24 || {}, testingStatus)}`)
@@ -346,26 +373,33 @@ const getRiskSignals = (decisionResult, questionsById = {}) => {
 
 const DecisionSummary = ({ decisionResult, questionsById, showDebug }) => {
     const riskSignals = getRiskSignals(decisionResult, questionsById)
+    const isInsufficient = decisionResult.outcome?.code === 'INSUFFICIENT_INFORMATION'
+    const hiddenMissingCount = Math.max(decisionResult.missingFields.length - 5, 0)
     return (
         <Card className={`${classes.card} ${classes.summaryCard}`}>
-            <h2 className={classes.cardTitle}>Decision-support summary</h2>
-            <div className={`${classes.severityBanner} ${severityClass(decisionResult.outcome?.severity)}`}>
-                <span>{getDecisionHeadline(decisionResult)}</span>
-            </div>
+            <h2 className={classes.cardTitle}>Decision support</h2>
             <div className={classes.summaryRows}>
                 <div>
-                    <span className={classes.summaryLabel}>Decision status</span>
+                    <span className={classes.summaryLabel}>Status</span>
                     <strong>{getDecisionStatus(decisionResult)}</strong>
                 </div>
             </div>
-            <h3 className={classes.subheading}>Why</h3>
-            <p>{decisionResult.rationale || 'Complete the intake to produce a decision-support rationale.'}</p>
+            <div className={`${classes.severityBanner} ${severityClass(decisionResult.outcome?.severity)}`}>
+                <span>{getDecisionHeadline(decisionResult)}</span>
+            </div>
+            {!isInsufficient && (
+                <>
+                    <h3 className={classes.subheading}>Why</h3>
+                    <p>{decisionResult.rationale || 'Complete the intake to produce a decision-support rationale.'}</p>
+                </>
+            )}
             <h3 className={classes.subheading}>Missing information</h3>
             {decisionResult.missingFields.length > 0 ? (
                 <ul className={classes.compactList}>
-                    {decisionResult.missingFields.slice(0, 6).map((field) => (
+                    {decisionResult.missingFields.slice(0, 5).map((field) => (
                         <li key={field.questionId}>{field.text}</li>
                     ))}
+                    {hiddenMissingCount > 0 && <li>+ {hiddenMissingCount} more</li>}
                 </ul>
             ) : (
                 <p className={classes.muted}>No missing visible core fields for the matched path.</p>
@@ -386,8 +420,7 @@ const DecisionSummary = ({ decisionResult, questionsById, showDebug }) => {
                     <li key={action}>{action}</li>
                 ))}
             </ul>
-            <h3 className={classes.subheading}>Source/governance note</h3>
-            <p className={classes.sourceNote}>{evidenceScopeNote} Final management follows local public health policy and clinical judgment.</p>
+            <p className={classes.sourceNote}>Basis: WHO SEARO decision tree; UKHSA terrestrial mammal country-risk overlay. Local policy governs operational use.</p>
             {decisionResult.warnings.length > 0 && (
                 <div className={classes.warnBox}>{decisionResult.warnings.join(' ')}</div>
             )}
@@ -401,9 +434,12 @@ const DecisionSummary = ({ decisionResult, questionsById, showDebug }) => {
                         <span className={classes.summaryLabel}>Outcome code</span>
                         <strong>{decisionResult.outcome?.code || 'manual_review_required'}</strong>
                     </div>
+                    <div>
+                        <span className={classes.summaryLabel}>Rule rationale</span>
+                        <strong>{decisionResult.rationale || 'No terminal rule matched yet'}</strong>
+                    </div>
                 </div>
             )}
-            <SafetyNotice compact />
         </Card>
     )
 }
@@ -417,7 +453,7 @@ const DerivedFieldsPanel = ({ decisionResult, questionsById, showDebug }) => {
                 <div className={classes.derivedList}>
                     {entries.map(([field, value]) => (
                         <div key={field} className={classes.derivedItem}>
-                            <span>{questionsById[field]?.text || field}</span>
+                            <span>{derivedFieldLabels[field] || questionsById[field]?.text || labelFromCode(field)}</span>
                             <strong>{valueLabel(questionsById[field] || {}, value)}</strong>
                             {showDebug && <small>{field}</small>}
                         </div>
@@ -433,18 +469,26 @@ const DerivedFieldsPanel = ({ decisionResult, questionsById, showDebug }) => {
 const ContextPanel = ({ decisionResult, questionsById }) => {
     const country = valueLabel(questionsById.geo02 || {}, decisionResult.effectiveAnswers.geo02)
     const species = valueLabel(questionsById.c04 || {}, decisionResult.effectiveAnswers.c04)
+    const terrestrialRisk = valueLabel(
+        questionsById.ukhsa_country_terrestrial_mammal_rabies_risk_level || {},
+        decisionResult.derivedValues.ukhsa_country_terrestrial_mammal_rabies_risk_level
+    )
+    const batContext = valueLabel(
+        questionsById.bat_lyssavirus_special_context || {},
+        decisionResult.derivedValues.bat_lyssavirus_special_context
+    )
     return (
         <Card className={classes.card}>
             <h2 className={classes.cardTitle}>UKHSA and bat context</h2>
             <dl className={classes.contextList}>
                 <dt>Exposure country/territory</dt>
                 <dd>{country}</dd>
-                <dt>Animal context</dt>
+                <dt>Animal</dt>
                 <dd>{species}</dd>
-                <dt>Country-risk overlay</dt>
-                <dd>UKHSA terrestrial mammal country-risk overlay, with separate bat lyssavirus context.</dd>
-                <dt>Bat exposure</dt>
-                <dd>{decisionResult.derivedValues.animal_is_bat ? 'Bat risk context active' : 'Not indicated by current answers'}</dd>
+                <dt>Terrestrial mammal risk</dt>
+                <dd>{terrestrialRisk}</dd>
+                <dt>Bat context</dt>
+                <dd>{decisionResult.derivedValues.animal_is_bat ? batContext : 'Not indicated'}</dd>
             </dl>
         </Card>
     )
@@ -491,27 +535,21 @@ const RabiesIntakePage = ({ answers, setAnswers, onRun, output }) => {
                     <h2 className={classes.cardTitle}>Sections</h2>
                     <div className={classes.statusStack}>
                         <div>
-                            <span>Intake status</span>
+                            <span>Intake</span>
                             <strong>{intakeStatus}</strong>
                         </div>
                         <div>
-                            <span>Required fields remaining</span>
+                            <span>Required remaining</span>
                             <strong>{requiredRemaining}</strong>
                         </div>
                         <div>
-                            <span>Decision status</span>
-                            <strong>{getDecisionStatus(decisionResult)}</strong>
+                            <span>Answered</span>
+                            <strong>{answeredCount} / {totalCount}</strong>
                         </div>
                         <div>
-                            <span>Next step</span>
-                            <strong>{rawAnsweredCount === 0 ? 'Start with exposure context or load sample' : 'Review missing fields and decision support'}</strong>
+                            <span>Derived</span>
+                            <strong>{derivedAnsweredCount}</strong>
                         </div>
-                    </div>
-                    <div className={classes.progressText}>
-                        Intake progress: {answeredCount} of {totalCount} visible questions answered
-                    </div>
-                    <div className={classes.progressSubtext}>
-                        {rawAnsweredCount} entered answers; {derivedAnsweredCount} derived answers available. Derived answers are counted separately and shown in the decision-support panel.
                     </div>
                     <div className={classes.progressTrack}>
                         <div
@@ -551,13 +589,11 @@ const RabiesIntakePage = ({ answers, setAnswers, onRun, output }) => {
                 </div>
 
                 {schemaWarning && <div className={classes.warnBox}>{schemaWarning}</div>}
-                <SafetyNotice />
 
                 <Card className={classes.card}>
                     <div className={classes.sectionHeader}>
                         <div>
                             <h2 className={classes.cardTitle}>{activeSection?.title}</h2>
-                            <p className={classes.muted}>WHO SEARO-aligned workflow basis with UKHSA terrestrial mammal country-risk overlay and separate bat lyssavirus context.</p>
                         </div>
                         <div className={classes.headerMeta}>
                             <Tag>Decision schema v{intakeSchema.version}</Tag>
@@ -579,7 +615,7 @@ const RabiesIntakePage = ({ answers, setAnswers, onRun, output }) => {
                                     {question.text}
                                 </label>
                                 {question.inline_notes?.length > 0 && (
-                                    <p className={classes.helperText}>{question.inline_notes[0]}</p>
+                                    <p className={classes.helperText}>{getHelperText(question)}</p>
                                 )}
                                 <QuestionInput
                                     question={question}
@@ -612,7 +648,6 @@ const RabiesIntakePage = ({ answers, setAnswers, onRun, output }) => {
                         <h2 className={classes.cardTitle}>Latest demo disposition</h2>
                         <p className={classes.outputStatus}>{output.recommendation.headline}</p>
                         <p className={classes.muted}>Matched rule: {output.recommendation.matched_rule_id || 'none'}</p>
-                        <SafetyNotice compact />
                     </Card>
                 )}
             </main>
@@ -668,7 +703,6 @@ const OutputPage = ({ output }) => {
         <div className={classes.outputGrid}>
             <Card className={classes.card}>
                 <h2 className={classes.cardTitle}>Decision result</h2>
-                <SafetyNotice />
                 <div className={`${classes.severityBanner} ${severityClass(output.recommendation.severity)}`}>
                     {output.recommendation.headline}
                 </div>
@@ -710,7 +744,7 @@ const OutputPage = ({ output }) => {
                 </div>
                 <p className={classes.warningText}>{output.production_warning}</p>
                 <div className={classes.warnBox}>
-                    Tracker validation/import is not a clinical approval. Local metadata mapping, local policy review, and clinical/public-health governance must be completed before operational use.
+                    Tracker validation/import is not a clinical approval. Complete local metadata mapping and governance review before operational use.
                 </div>
                 {validationState.error && <div className={classes.errorBox}>{validationState.error}</div>}
                 {validationState.result && (
@@ -759,7 +793,6 @@ const MappingPage = ({ mappingText, setMappingText }) => {
                     <li>Local DHIS2 metadata must be mapped before real deployment validation.</li>
                 </ul>
                 <h3 className={classes.subheading}>Readiness</h3>
-                <SafetyNotice compact />
                 {error && <div className={classes.errorBox}>Invalid JSON: {error}</div>}
                 {!error && readiness.ready && <div className={classes.okBox}>Mapping passes local readiness checks.</div>}
                 {!error && readiness.errors.map((item) => <div className={classes.errorBox} key={item}>{item}</div>)}
@@ -802,7 +835,6 @@ const SubmissionNotesPage = () => (
     <div className={classes.outputGrid}>
         <Card className={classes.card}>
             <h2 className={classes.cardTitle}>Competition submission scope</h2>
-            <SafetyNotice />
             <p>
                 RaDE for DHIS2 demonstrates a WHO SEARO-aligned rabies PEP decision-support workflow inside an installable DHIS2 App Platform app. It is designed for competition review, workflow demonstration, schema auditability, and Tracker payload readiness review.
             </p>
@@ -872,7 +904,7 @@ const App = () => {
                         Rabies exposure decision support for DHIS2 Tracker
                     </p>
                     <p className={classes.valueProp}>
-                        Use structured exposure data to surface missing information, WHO SEARO-aligned recommendations, rationale, follow-up task suggestions, and Tracker-compatible outputs.
+                        Capture structured exposure data, review WHO SEARO-aligned decision support, and preview Tracker-compatible outputs.
                     </p>
                 </div>
                 <div className={classes.headerMeta}>
@@ -891,7 +923,7 @@ const App = () => {
                 ))}
             </div>
 
-            <DemoNotice />
+            <SafetyNotice />
 
             <EvidencePanel />
 
@@ -900,8 +932,6 @@ const App = () => {
                     DHIS2 dataStore app config is not loaded. The intake and demo payload workflow still runs locally; push app config for instance-specific defaults.
                 </div>
             )}
-
-            <SafetyNotice />
 
             <nav className={classes.tabs}>
                 {pages.map((page) => (

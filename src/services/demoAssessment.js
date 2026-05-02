@@ -121,5 +121,5 @@ export const buildNotePreview = (assessment) => [
     'Recommended actions:',
     ...(assessment.recommended_actions || []).map((line) => `- ${line}`),
     '',
-    'Important: WHO SEARO-aligned decision support for demonstration/workflow support. Final management should follow local public health policy and clinical judgment.',
+    'Basis: WHO SEARO decision tree. Operational use requires local policy and governance review.',
 ].join('\n')

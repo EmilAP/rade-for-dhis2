@@ -10,7 +10,7 @@ This repository is the self-contained public competition submission for **RaDE f
 - Presents a rabies exposure intake workflow with the polished app title **RaDE for DHIS2** and subtitle **Rabies exposure decision support for DHIS2 Tracker**.
 - Uses bundled demo fixtures under `src/assets/` and `src/fixtures/`; no runtime file dependency outside this repository is required.
 - Applies deterministic local rule-based decision support from the app-facing schema in `src/assets/rabies_intake_v2_with_decision_logic.json`.
-- Shows matched rule, rationale, missing information, recommended actions, follow-up task suggestions, and note/artifact previews.
+- Shows recommendation status, rationale, missing information, suggested actions, follow-up task suggestions, and note/artifact previews.
 - Generates Tracker-compatible payload concepts and validates readiness for DHIS2 metadata mapping.
 - Uses the DHIS2 app runtime/session for DHIS2 API calls where applicable and does not store DHIS2 credentials in frontend code.
 
@@ -22,7 +22,7 @@ This repository is the self-contained public competition submission for **RaDE f
 - It does not replace local public-health policy, clinical judgment, governance, privacy review, security review, or role-based access configuration.
 - It does not require or call an external AI service.
 
-Final management must follow local public-health policy, clinical judgment, clinical/public-health governance, and locally configured DHIS2 metadata.
+Demo decision support only. Production use requires local DHIS2 metadata mapping, policy review, clinical/public-health governance, and locally configured DHIS2 metadata.
 
 ## Quick Start For Reviewers
 
@@ -78,12 +78,14 @@ Known non-blocking toolchain output may include App Platform dependency deprecat
 
 DHIS2 Tracker remains the system of record. Production use requires local Tracker metadata mapping before validation/import paths are enabled for real data.
 
-## Evidence And Reference Data
+## Evidence And Scope
 
 - **Decision workflow:** World Health Organization, Regional Office for South-East Asia. "Rabies post-exposure prophylaxis decision tree." WHO SEARO. PDF. Accessed 1 May 2026. Source: https://cdn.who.int/media/docs/default-source/searo/ntd/who-searo-rabies-post-exposure-prophylaxis-decision-tree.pdf?sfvrsn=81239502_1
 - **Terrestrial mammal country-risk overlay:** UK Health Security Agency. "Rabies risks in terrestrial animals by country." GOV.UK. Published 29 May 2014; last updated 1 May 2024. Accessed 1 May 2026. Source: https://www.gov.uk/government/publications/rabies-risks-by-country/rabies-risks-in-terrestrial-animals-by-country
 
-WHO SEARO is the basis for the rabies PEP decision-tree workflow. UKHSA is used only as a terrestrial mammal country-risk overlay and does not cover the whole decision engine. Bat lyssavirus context is separate and local-guidance dependent. The UKHSA source should be checked periodically for freshness, and local public-health policy plus clinical judgment remain authoritative.
+Decision workflow: WHO SEARO rabies PEP decision tree. Country-risk overlay: UKHSA terrestrial mammal rabies risk by country.
+
+WHO SEARO provides the demo decision-tree basis. UKHSA is used only as a terrestrial mammal country-risk overlay and does not cover the whole decision engine. Bat lyssavirus context is separate and local-guidance dependent. The UKHSA source should be checked periodically for freshness, and local public-health policy plus clinical judgment remain authoritative.
 
 ## Security And Responsible Data Use
 

@@ -42,7 +42,7 @@ Built by Emil Prikryl with AI-assisted development support. No additional human 
 
 ## Artifact
 
-`rade-for-dhis2-1.0.0.zip`
+`build/bundle/rade-for-dhis2-1.0.0.zip`
 
 Expected repository path after build:
 

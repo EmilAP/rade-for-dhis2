@@ -65,7 +65,7 @@ This checklist verifies that `rade-dhis2-app` can stand alone as the public repo
 - [x] README supports `npm install`.
 - [x] README supports `npm run build`.
 - [x] README supports `npm test -- --watchAll=false`.
-- [x] README explains installing/uploading `rade-for-dhis2-1.0.0.zip` into DHIS2 App Management.
+- [x] README explains installing/uploading `build/bundle/rade-for-dhis2-1.0.0.zip` into DHIS2 App Management.
 - [x] README documents local DHIS2 proxy commands.
 
 ## H. Form links

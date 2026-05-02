@@ -25,10 +25,10 @@ const schemaWarning = augmentedSchema?.decision_support
     : 'decision_support is missing; only intake rendering is available.'
 
 const pages = [
-    { id: 'intake', label: 'Rabies Intake' },
-    { id: 'output', label: 'Demo Output / Tracker Payload' },
-    { id: 'mapping', label: 'Metadata Mapping / Readiness' },
-    { id: 'submission', label: 'Competition Notes' },
+    { id: 'intake', label: 'Intake' },
+    { id: 'output', label: 'Demo Output' },
+    { id: 'mapping', label: 'Metadata Readiness' },
+    { id: 'submission', label: 'Notes' },
 ]
 
 const safetyNotice =
@@ -36,14 +36,17 @@ const safetyNotice =
 
 const valueCards = [
     {
+        step: '1',
         title: 'Assess exposure',
         text: 'Capture exposure, animal, wound, country, and patient context.',
     },
     {
+        step: '2',
         title: 'Review decision support',
         text: 'Show recommendation status, rationale, missing fields, and suggested actions.',
     },
     {
+        step: '3',
         title: 'Generate Tracker output',
         text: 'Preview Tracker-compatible payloads and metadata readiness.',
     },
@@ -117,6 +120,14 @@ const severityClass = (severity) => {
     return classes.severityGrey
 }
 
+const statusPillClass = (decisionResult) => {
+    const sev = decisionResult.outcome?.severity
+    if (sev === 'red') return classes.pillRed
+    if (sev === 'orange' || sev === 'amber') return classes.pillAmber
+    if (sev === 'green') return classes.pillGreen
+    return classes.pillGrey
+}
+
 const SafetyNotice = () => (
     <div className={classes.safetyNotice}>
         {safetyNotice}
@@ -164,7 +175,7 @@ const getHelperText = (question) => {
         .replace(/ should be handled through bat exposure guidance/gi, '')
 }
 
-const QuestionInput = ({ question, value, onChange }) => {
+const QuestionInput = ({ id, question, value, onChange }) => {
     const options = getQuestionOptions(question)
     const warning = getUnsupportedControlMessage(question)
 
@@ -173,6 +184,7 @@ const QuestionInput = ({ question, value, onChange }) => {
     if (question.response_type === 'enum' || question.response_type === 'count_enum') {
         return (
             <select
+                id={id}
                 className={classes.control}
                 value={value || ''}
                 onChange={(event) => onChange(event.target.value)}
@@ -207,6 +219,7 @@ const QuestionInput = ({ question, value, onChange }) => {
                             value === option.value ? classes.choiceSelected : ''
                         }`}
                         type="button"
+                        aria-label={`${question.text}: ${option.label || option.value}`}
                         onClick={() => onChange(option.value)}
                     >
                         {option.label || option.value}
@@ -219,6 +232,7 @@ const QuestionInput = ({ question, value, onChange }) => {
     if (question.response_type === 'datetime') {
         return (
             <input
+                id={id}
                 className={classes.control}
                 type="datetime-local"
                 value={datetimeValue(value)}
@@ -230,6 +244,7 @@ const QuestionInput = ({ question, value, onChange }) => {
     if (question.response_type === 'free_text') {
         return (
             <textarea
+                id={id}
                 className={classes.textarea}
                 value={value || ''}
                 onChange={(event) => onChange(event.target.value)}
@@ -241,7 +256,7 @@ const QuestionInput = ({ question, value, onChange }) => {
     if (question.response_type === 'multiselect_any' || question.response_type === 'multiselect') {
         const selected = Array.isArray(value) ? value : []
         return (
-            <div className={classes.checkboxList}>
+            <div className={classes.checkboxList} role="group" aria-label={question.text}>
                 {options.map((option) => {
                     const checked = selected.includes(option.value)
                     return (
@@ -270,6 +285,7 @@ const QuestionInput = ({ question, value, onChange }) => {
     if (isNumericResponseType(question.response_type)) {
         return (
             <input
+                id={id}
                 className={classes.control}
                 type="number"
                 value={value || ''}
@@ -280,6 +296,7 @@ const QuestionInput = ({ question, value, onChange }) => {
 
     return (
         <input
+            id={id}
             className={classes.control}
             value={Array.isArray(value) ? value.join('|') : value || ''}
             onChange={(event) => onChange(event.target.value)}
@@ -377,12 +394,11 @@ const DecisionSummary = ({ decisionResult, questionsById, showDebug }) => {
     const hiddenMissingCount = Math.max(decisionResult.missingFields.length - 5, 0)
     return (
         <Card className={`${classes.card} ${classes.summaryCard}`}>
-            <h2 className={classes.cardTitle}>Decision support</h2>
-            <div className={classes.summaryRows}>
-                <div>
-                    <span className={classes.summaryLabel}>Status</span>
-                    <strong>{getDecisionStatus(decisionResult)}</strong>
-                </div>
+            <div className={classes.decisionCardHeader}>
+                <h2 className={classes.cardTitle}>Decision support</h2>
+                <span className={`${classes.statusPill} ${statusPillClass(decisionResult)}`}>
+                    {getDecisionStatus(decisionResult)}
+                </span>
             </div>
             <div className={`${classes.severityBanner} ${severityClass(decisionResult.outcome?.severity)}`}>
                 <span>{getDecisionHeadline(decisionResult)}</span>
@@ -407,7 +423,7 @@ const DecisionSummary = ({ decisionResult, questionsById, showDebug }) => {
             <h3 className={classes.subheading}>Key risk signals</h3>
             {riskSignals.length > 0 ? (
                 <ul className={classes.compactList}>
-                    {riskSignals.map((signal) => (
+                    {riskSignals.slice(0, 4).map((signal) => (
                         <li key={signal}>{signal}</li>
                     ))}
                 </ul>
@@ -416,7 +432,7 @@ const DecisionSummary = ({ decisionResult, questionsById, showDebug }) => {
             )}
             <h3 className={classes.subheading}>Suggested next actions</h3>
             <ul className={classes.compactList}>
-                {getDecisionActions(decisionResult).map((action) => (
+                {getDecisionActions(decisionResult).slice(0, 3).map((action) => (
                     <li key={action}>{action}</li>
                 ))}
             </ul>
@@ -425,20 +441,23 @@ const DecisionSummary = ({ decisionResult, questionsById, showDebug }) => {
                 <div className={classes.warnBox}>{decisionResult.warnings.join(' ')}</div>
             )}
             {showDebug && (
-                <div className={classes.summaryRows}>
-                    <div>
-                        <span className={classes.summaryLabel}>Matched rule</span>
-                        <strong>{decisionResult.matchedRule?.id || 'None'}</strong>
+                <details className={classes.debugDetails}>
+                    <summary>Debug: rule trace</summary>
+                    <div className={classes.summaryRows}>
+                        <div>
+                            <span className={classes.summaryLabel}>Matched rule</span>
+                            <strong>{decisionResult.matchedRule?.id || 'None'}</strong>
+                        </div>
+                        <div>
+                            <span className={classes.summaryLabel}>Outcome code</span>
+                            <strong>{decisionResult.outcome?.code || 'manual_review_required'}</strong>
+                        </div>
+                        <div>
+                            <span className={classes.summaryLabel}>Rule rationale</span>
+                            <strong>{decisionResult.rationale || 'No terminal rule matched yet'}</strong>
+                        </div>
                     </div>
-                    <div>
-                        <span className={classes.summaryLabel}>Outcome code</span>
-                        <strong>{decisionResult.outcome?.code || 'manual_review_required'}</strong>
-                    </div>
-                    <div>
-                        <span className={classes.summaryLabel}>Rule rationale</span>
-                        <strong>{decisionResult.rationale || 'No terminal rule matched yet'}</strong>
-                    </div>
-                </div>
+                </details>
             )}
         </Card>
     )
@@ -447,8 +466,8 @@ const DecisionSummary = ({ decisionResult, questionsById, showDebug }) => {
 const DerivedFieldsPanel = ({ decisionResult, questionsById, showDebug }) => {
     const entries = Object.entries(decisionResult.derivedValues)
     return (
-        <Card className={classes.card}>
-            <h2 className={classes.cardTitle}>Derived fields</h2>
+        <div>
+            <h3 className={classes.subheading}>Derived fields</h3>
             {entries.length > 0 ? (
                 <div className={classes.derivedList}>
                     {entries.map(([field, value]) => (
@@ -462,7 +481,7 @@ const DerivedFieldsPanel = ({ decisionResult, questionsById, showDebug }) => {
             ) : (
                 <p className={classes.muted}>No derived values yet.</p>
             )}
-        </Card>
+        </div>
     )
 }
 
@@ -478,19 +497,19 @@ const ContextPanel = ({ decisionResult, questionsById }) => {
         decisionResult.derivedValues.bat_lyssavirus_special_context
     )
     return (
-        <Card className={classes.card}>
-            <h2 className={classes.cardTitle}>UKHSA and bat context</h2>
+        <div>
+            <h3 className={classes.subheading}>Country and animal context</h3>
             <dl className={classes.contextList}>
-                <dt>Exposure country/territory</dt>
+                <dt>Country/territory</dt>
                 <dd>{country}</dd>
                 <dt>Animal</dt>
                 <dd>{species}</dd>
-                <dt>Terrestrial mammal risk</dt>
+                <dt>Terrestrial risk</dt>
                 <dd>{terrestrialRisk}</dd>
                 <dt>Bat context</dt>
                 <dd>{decisionResult.derivedValues.animal_is_bat ? batContext : 'Not indicated'}</dd>
             </dl>
-        </Card>
+        </div>
     )
 }
 
@@ -585,7 +604,12 @@ const RabiesIntakePage = ({ answers, setAnswers, onRun, output }) => {
                 <div className={classes.actionBar}>
                     <Button onClick={() => setAnswers(sampleScenario.answers)}>Load sample</Button>
                     <Button onClick={() => setAnswers({})}>Clear</Button>
-                    <Button primary onClick={() => onRun(decisionResult)}>Validate / Run Demo</Button>
+                    <Button
+                        primary={rawAnsweredCount > 0}
+                        onClick={() => onRun(decisionResult)}
+                    >
+                        Validate / Run Demo
+                    </Button>
                 </div>
 
                 {schemaWarning && <div className={classes.warnBox}>{schemaWarning}</div>}
@@ -618,6 +642,7 @@ const RabiesIntakePage = ({ answers, setAnswers, onRun, output }) => {
                                     <p className={classes.helperText}>{getHelperText(question)}</p>
                                 )}
                                 <QuestionInput
+                                    id={question.id}
                                     question={question}
                                     value={answers[question.id]}
                                     onChange={(value) => updateAnswer(question.id, value)}
@@ -658,12 +683,19 @@ const RabiesIntakePage = ({ answers, setAnswers, onRun, output }) => {
                     questionsById={questionsById}
                     showDebug={showDebug}
                 />
-                <DerivedFieldsPanel
-                    decisionResult={decisionResult}
-                    questionsById={questionsById}
-                    showDebug={showDebug}
-                />
-                <ContextPanel decisionResult={decisionResult} questionsById={questionsById} />
+                <Card className={classes.card}>
+                    <details>
+                        <summary className={classes.collapsibleSummary}>Derived fields &amp; context</summary>
+                        <div className={classes.collapsibleBody}>
+                            <DerivedFieldsPanel
+                                decisionResult={decisionResult}
+                                questionsById={questionsById}
+                                showDebug={showDebug}
+                            />
+                            <ContextPanel decisionResult={decisionResult} questionsById={questionsById} />
+                        </div>
+                    </details>
+                </Card>
                 {showDebug && (
                     <Card className={classes.card}>
                         <h2 className={classes.cardTitle}>Debug trace</h2>
@@ -731,8 +763,10 @@ const OutputPage = ({ output }) => {
                         <li key={task.task_type}>{task.description}</li>
                     ))}
                 </ul>
-                <h3 className={classes.subheading}>Note/artifact preview</h3>
-                <pre className={classes.preview}>{output.note_preview}</pre>
+                <details className={classes.advancedBlock}>
+                    <summary>Note/artifact preview</summary>
+                    <pre className={classes.preview}>{output.note_preview}</pre>
+                </details>
             </Card>
 
             <Card className={classes.card}>
@@ -781,10 +815,16 @@ const MappingPage = ({ mappingText, setMappingText }) => {
     return (
         <div className={classes.outputGrid}>
             <Card className={classes.card}>
-                <h2 className={classes.cardTitle}>Metadata mapping requirements</h2>
+                <div className={classes.decisionCardHeader}>
+                    <h2 className={classes.cardTitle}>Metadata readiness</h2>
+                    <span className={`${classes.statusPill} ${!error && readiness.ready ? classes.pillGreen : error ? classes.pillRed : classes.pillAmber}`}>
+                        {error ? 'Invalid JSON' : readiness.ready ? 'Ready' : 'Scaffold placeholders'}
+                    </span>
+                </div>
                 <p>
-                    Production use requires local DHIS2 programs, stages, data elements, option sets,
-                    tracked entity attributes, and organisation units to be mapped before import.
+                    Demo fixtures work without metadata import. Operational use requires local DHIS2
+                    programs, stages, data elements, option sets, tracked entity attributes, and
+                    organisation units to be mapped before validation or import.
                 </p>
                 <ul className={classes.compactList}>
                     <li>Demo scaffold UIDs beginning with RADE_* are not production-ready.</li>
@@ -807,10 +847,16 @@ const MappingPage = ({ mappingText, setMappingText }) => {
             <Card className={classes.card}>
                 <div className={classes.sectionHeader}>
                     <h2 className={classes.cardTitle}>Paste or upload mapping JSON</h2>
-                    <input type="file" accept="application/json,.json" onChange={handleUpload} />
+                    <input
+                        type="file"
+                        accept="application/json,.json"
+                        aria-label="Upload mapping JSON"
+                        onChange={handleUpload}
+                    />
                 </div>
                 <textarea
                     className={classes.mappingArea}
+                    aria-label="Paste mapping JSON"
                     value={mappingText}
                     onChange={(event) => setMappingText(event.target.value)}
                     placeholder={formatJson({
@@ -824,8 +870,10 @@ const MappingPage = ({ mappingText, setMappingText }) => {
                         dataElements: { c02: 'realDataElementUid' },
                     })}
                 />
-                <h3 className={classes.subheading}>Placeholder findings</h3>
-                <pre className={classes.preview}>{formatJson(readiness.placeholders.slice(0, 50))}</pre>
+                <details className={classes.advancedBlock}>
+                    <summary>Placeholder findings ({readiness.placeholders.length})</summary>
+                    <pre className={classes.preview}>{formatJson(readiness.placeholders.slice(0, 50))}</pre>
+                </details>
             </Card>
         </div>
     )
@@ -836,7 +884,7 @@ const SubmissionNotesPage = () => (
         <Card className={classes.card}>
             <h2 className={classes.cardTitle}>Competition submission scope</h2>
             <p>
-                RaDE for DHIS2 demonstrates a WHO SEARO-aligned rabies PEP decision-support workflow inside an installable DHIS2 App Platform app. It is designed for competition review, workflow demonstration, schema auditability, and Tracker payload readiness review.
+                RaDE demonstrates a WHO SEARO-aligned rabies PEP decision-support workflow inside an installable DHIS2 App Platform app. It is designed for competition review, workflow demonstration, schema auditability, and Tracker payload readiness review.
             </p>
             <h3 className={classes.subheading}>What reviewers can evaluate</h3>
             <ul className={classes.compactList}>
@@ -899,12 +947,9 @@ const App = () => {
         <div className={classes.container}>
             <header className={classes.header}>
                 <div>
-                    <h1 className={classes.title}>RaDE for DHIS2</h1>
+                    <h1 className={classes.title}>RaDE: Rabies Exposure Decision Support</h1>
                     <p className={classes.subtitle}>
                         Rabies exposure decision support for DHIS2 Tracker
-                    </p>
-                    <p className={classes.valueProp}>
-                        Capture structured exposure data, review WHO SEARO-aligned decision support, and preview Tracker-compatible outputs.
                     </p>
                 </div>
                 <div className={classes.headerMeta}>
@@ -917,6 +962,7 @@ const App = () => {
             <div className={classes.valueGrid}>
                 {valueCards.map((card) => (
                     <div key={card.title} className={classes.valueCard}>
+                        <div className={classes.valueCardStep}>{card.step}</div>
                         <h2>{card.title}</h2>
                         <p>{card.text}</p>
                     </div>
@@ -929,7 +975,7 @@ const App = () => {
 
             {error && (
                 <div className={classes.warnBox}>
-                    DHIS2 dataStore app config is not loaded. The intake and demo payload workflow still runs locally; push app config for instance-specific defaults.
+                    DHIS2 dataStore app config is not loaded. Intake, sample fixtures, and demo payload preview still run locally; push app config only for instance-specific defaults.
                 </div>
             )}
 

@@ -72,6 +72,20 @@
     margin: 0;
 }
 
+.valueCardStep {
+    align-items: center;
+    background: var(--colors-blue600);
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    font-size: 13px;
+    font-weight: 700;
+    height: 28px;
+    justify-content: center;
+    margin-bottom: 8px;
+    width: 28px;
+}
+
 .evidencePanel {
     background: white;
     border: 1px solid var(--colors-grey300);
@@ -475,6 +489,52 @@
     color: var(--colors-grey800);
 }
 
+.statusPill {
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 3px 9px;
+    white-space: nowrap;
+}
+
+.pillRed {
+    background: var(--colors-red050);
+    border: 1px solid var(--colors-red300);
+    color: var(--colors-red800);
+}
+
+.pillAmber {
+    background: var(--colors-yellow050);
+    border: 1px solid var(--colors-yellow300);
+    color: var(--colors-yellow900);
+}
+
+.pillGreen {
+    background: var(--colors-green050);
+    border: 1px solid var(--colors-green300);
+    color: var(--colors-green800);
+}
+
+.pillGrey {
+    background: var(--colors-grey100);
+    border: 1px solid var(--colors-grey300);
+    color: var(--colors-grey700);
+}
+
+.decisionCardHeader {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.decisionCardHeader .cardTitle {
+    margin: 0;
+}
+
 .summaryRows {
     display: grid;
     gap: 8px;
@@ -519,19 +579,18 @@
 
 .derivedList {
     display: grid;
-    gap: 8px;
+    gap: 6px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .derivedItem {
-    border-bottom: 1px solid var(--colors-grey300);
-    display: grid;
-    gap: 3px;
-    padding-bottom: 8px;
-}
-
-.derivedItem:last-child {
-    border-bottom: 0;
-    padding-bottom: 0;
+    background: var(--colors-grey050);
+    border: 1px solid var(--colors-grey300);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 8px;
 }
 
 .derivedItem span,
@@ -584,6 +643,35 @@
 .advancedBlock summary {
     cursor: pointer;
     font-weight: 700;
+}
+
+.collapsibleSummary {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--colors-grey800);
+    list-style: none;
+    user-select: none;
+}
+
+.collapsibleSummary::before {
+    content: '▶ ';
+    font-size: 10px;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+details[open] > .collapsibleSummary::before {
+    content: '▼ ';
+}
+
+.collapsibleBody {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--colors-grey300);
 }
 
 .sectionNav {

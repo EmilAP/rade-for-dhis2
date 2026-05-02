@@ -191,7 +191,7 @@ export const buildLocalDemoOutput = (
 
     return {
         demo_metadata_scaffold: {
-            extension_name: 'RaDE for DHIS2',
+            extension_name: 'RaDE: Rabies Exposure Decision Support',
             schema_path: 'src/assets/rabies_intake_v2_with_decision_logic.json',
             scenario_path: 'src/assets/dhis2-rabies-competition-scenario.json',
         },

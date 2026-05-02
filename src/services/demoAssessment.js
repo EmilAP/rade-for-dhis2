@@ -110,7 +110,7 @@ export const buildDemoAssessment = (schema, answers) => {
 }
 
 export const buildNotePreview = (assessment) => [
-    'RaDE for DHIS2 demo note',
+    'RaDE rabies exposure demo note',
     `Status: ${assessment.status}`,
     `Recommendation: ${assessment.headline || assessment.code}`,
     `Matched rule: ${assessment.matched_rule_id || 'none'}`,

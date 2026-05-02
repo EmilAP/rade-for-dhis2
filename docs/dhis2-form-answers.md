@@ -42,12 +42,12 @@ Built by Emil Prikryl with AI-assisted development support. No additional human 
 
 ## Artifact
 
-`build/bundle/rade-for-dhis2-1.0.0.zip`
+`build/bundle/rade-rabies-exposure-1.0.0.zip`
 
 Expected repository path after build:
 
 ```text
-build/bundle/rade-for-dhis2-1.0.0.zip
+build/bundle/rade-rabies-exposure-1.0.0.zip
 ```
 
 ## Prerequisites
@@ -60,10 +60,10 @@ The app uses deterministic local rule-based decision support and does not requir
 
 ## Screenshot suggestions
 
-- First screen showing **RaDE for DHIS2**, **Rabies exposure decision support for DHIS2 Tracker**, the concise demo decision-support banner, and reviewer badges.
-- Rabies Intake page after loading the sample scenario, including live decision support.
-- Demo Output / Tracker Payload page showing recommendation and payload readiness warning.
-- Metadata Mapping / Readiness page showing placeholder checks.
+- First screen showing **RaDE: Rabies Exposure Decision Support**, **Rabies exposure decision support for DHIS2 Tracker**, the concise demo decision-support banner, and reviewer badges.
+- Intake page after loading the sample scenario, including live decision support.
+- Demo Output page showing recommendation and payload readiness warning.
+- Metadata Readiness page showing placeholder checks.
 
 ## Scope note
 

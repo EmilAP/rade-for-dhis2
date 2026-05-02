@@ -12,7 +12,7 @@ npm run build
 The DHIS2 App Platform build creates:
 
 ```text
-build/bundle/rade-for-dhis2-1.0.0.zip
+build/bundle/rade-rabies-exposure-1.0.0.zip
 ```
 
 `npm run pack` and `yarn build` are also available through the package scripts.
@@ -21,8 +21,8 @@ build/bundle/rade-for-dhis2-1.0.0.zip
 
 1. Sign in to a DHIS2 instance as a user allowed to manage apps.
 2. Open **App Management**.
-3. Upload `build/bundle/rade-for-dhis2-1.0.0.zip`.
-4. Open **RaDE for DHIS2** from the DHIS2 app menu.
+3. Upload `build/bundle/rade-rabies-exposure-1.0.0.zip`.
+4. Open **RaDE: Rabies Exposure Decision Support** from the DHIS2 app menu.
 
 The app runs inside the DHIS2 session. It does not ask users to paste DHIS2 usernames or passwords into frontend code.
 
@@ -62,7 +62,7 @@ WHO SEARO is the decision workflow basis. UKHSA is only the terrestrial mammal c
 
 ## Production metadata and import limitations
 
-Production use requires mapping local DHIS2 programs, stages, data elements, option sets, tracked entity attributes, and org units. Default `RADE_*` and `PLACEHOLDER_*` identifiers are demo scaffold values and must be replaced.
+Demo fixtures work without metadata import. Production use requires mapping local DHIS2 programs, stages, data elements, option sets, tracked entity attributes, and org units. Default `RADE_*` and `PLACEHOLDER_*` identifiers are demo scaffold values and must be replaced.
 
 Tracker validation/import is not clinical approval. Do not enable live production import without local metadata validation, payload review, local public-health policy review, clinical governance, privacy/security review, and DHIS2 role-based access configuration.
 

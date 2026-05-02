@@ -1,7 +1,7 @@
 {
   "scenario_id": "dhis2_competition_stray_dog_bite_india",
   "title": "Stray dog bite during travel, animal unavailable",
-  "description": "Small demo scenario for RaDE for DHIS2. A patient reports a high-priority Category III exposure from a stray dog in India. The animal is unavailable and prior rabies vaccination is denied.",
+  "description": "Small demo scenario for RaDE rabies exposure decision support. A patient reports a high-priority Category III exposure from a stray dog in India. The animal is unavailable and prior rabies vaccination is denied.",
   "demographics": {
     "firstName": "Asha",
     "lastName": "Demo",

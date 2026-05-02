@@ -1,6 +1,6 @@
 {
   "demo_metadata_scaffold": {
-    "extension_name": "RaDE for DHIS2",
+    "extension_name": "RaDE: Rabies Exposure Decision Support",
     "schema_path": "data/canonical/rabies_intake_v2_dhis2_competition.json",
     "scenario_path": "examples/dhis2-rabies-competition-scenario.json",
     "tracker_payload_path": "output/dhis2-competition/dhis2-tracker-payload.json",
@@ -16,7 +16,7 @@
   "scenario": {
     "id": "dhis2_competition_stray_dog_bite_india",
     "title": "Stray dog bite during travel, animal unavailable",
-    "description": "Small demo scenario for RaDE for DHIS2. A patient reports a high-priority Category III exposure from a stray dog in India. The animal is unavailable and prior rabies vaccination is denied."
+    "description": "Small demo scenario for RaDE rabies exposure decision support. A patient reports a high-priority Category III exposure from a stray dog in India. The animal is unavailable and prior rabies vaccination is denied."
   },
   "schema": {
     "schema_id": "rabies_intake_v2",

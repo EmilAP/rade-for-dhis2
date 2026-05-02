@@ -11,7 +11,7 @@ export const ConfigError = ({ error }) => {
     return (
         <CenteredContent>
             <div className={classes.container}>
-                <h1 className={classes.title}>RaDE for DHIS2</h1>
+                <h1 className={classes.title}>RaDE: Rabies Exposure Decision Support</h1>
                 <NoticeBox
                     error={!isNotFound}
                     warning={isNotFound}

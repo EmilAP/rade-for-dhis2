@@ -21,7 +21,7 @@ npm run build
 The installable DHIS2 app archive is written to:
 
 ```text
-build/bundle/rade-for-dhis2-1.0.0.zip
+build/bundle/rade-rabies-exposure-1.0.0.zip
 ```
 
 `npm run pack` uses the same App Platform build command.

@@ -13,7 +13,7 @@ This checklist verifies that `rade-dhis2-app` can stand alone as the public repo
 
 ## B. Installable artifact
 
-- [x] Installable archive path is documented: `build/bundle/rade-for-dhis2-1.0.0.zip`.
+- [x] Installable archive path is documented: `build/bundle/rade-rabies-exposure-1.0.0.zip`.
 - [x] Keeping the zip in this repo is intentional for the competition release if present.
 - [x] README explains how to rebuild it with `npm run build`.
 - [x] README explains that a future omitted zip should be downloaded from GitHub Releases.
@@ -65,7 +65,7 @@ This checklist verifies that `rade-dhis2-app` can stand alone as the public repo
 - [x] README supports `npm install`.
 - [x] README supports `npm run build`.
 - [x] README supports `npm test -- --watchAll=false`.
-- [x] README explains installing/uploading `build/bundle/rade-for-dhis2-1.0.0.zip` into DHIS2 App Management.
+- [x] README explains installing/uploading `build/bundle/rade-rabies-exposure-1.0.0.zip` into DHIS2 App Management.
 - [x] README documents local DHIS2 proxy commands.
 
 ## H. Form links

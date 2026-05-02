@@ -1,7 +1,7 @@
 {
-    "name": "rade-for-dhis2",
+    "name": "rade-rabies-exposure",
     "version": "1.0.0",
-    "description": "RaDE for DHIS2 rabies exposure intake, local demo decision support, and Tracker payload generation",
+    "description": "RaDE rabies exposure decision support for DHIS2 Tracker workflows",
     "license": "BSD-3-Clause",
     "private": true,
     "scripts": {

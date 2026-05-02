@@ -10,7 +10,7 @@
 | `i18n/` | App Platform translation scaffold. | Low |
 | `README.md` | Public documentation link for reviewers and form. | Low |
 | `docs/` | Self-contained reviewer, install, development, security, mapping, video, and form docs. | Low |
-| `build/bundle/rade-for-dhis2-1.0.0.zip` | Installable competition artifact, small enough to keep intentionally. | Low |
+| `build/bundle/rade-rabies-exposure-1.0.0.zip` | Installable App Platform artifact, small enough to keep intentionally. | Low |
 
 ## Delete
 

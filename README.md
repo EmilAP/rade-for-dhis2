@@ -1,13 +1,27 @@
-# RaDE for DHIS2
+# RaDE: Rabies Exposure Decision Support
 
-RaDE for DHIS2 is an installable DHIS2 App Platform web app for rabies exposure decision support in DHIS2 Tracker workflows. It provides structured intake, WHO SEARO-aligned rule-based recommendations, rationale, missing-information prompts, metadata readiness checks, and Tracker-compatible output concepts while keeping DHIS2 Tracker as the system of record.
+RaDE: Rabies Exposure Decision Support is an installable DHIS2 App Platform web app for rabies exposure decision support in DHIS2 Tracker workflows. It provides structured intake, WHO SEARO-aligned rule-based recommendations, rationale, missing-information prompts, metadata readiness checks, and Tracker-compatible output concepts while keeping DHIS2 Tracker as the system of record.
 
-This repository is the self-contained public competition submission for **RaDE for DHIS2**. C-COMS/CCM are not part of this submission, and prior RaDE work is reference context only; reviewers do not need any sibling repository or private local folder to build, test, install, or understand this app.
+This repository is the self-contained public competition submission for **RaDE for DHIS2** and a future App Hub readiness baseline for **RaDE: Rabies Exposure Decision Support**. C-COMS/CCM are not part of this submission, and prior RaDE work is reference context only; reviewers do not need any sibling repository or private local folder to build, test, install, or understand this app.
+
+## DHIS2 App Competition submission version
+
+The frozen submission version for the DHIS2 App Competition 2026 is preserved at tag/release [`v0.1.0-dhis2-competition-submission`](https://github.com/EmilAP/rade-for-dhis2/releases/tag/v0.1.0-dhis2-competition-submission) and corresponds to the installable app artifact uploaded with the competition form.
+
+The installable DHIS2 app artifact uploaded with the competition form was:
+
+```text
+rade-for-dhis2-1.0.0.zip
+```
+
+The [`main` branch](https://github.com/EmilAP/rade-for-dhis2) may include post-submission improvements such as UI polish, clearer documentation, robustness updates, and App Hub readiness work. Reviewers who want to reproduce the submitted artifact should use the tagged release; reviewers who want to see the most current interface should review the latest `main` branch.
+
+Note: GitHub automatically provides source-code archives for tags, such as `v0.1.0-dhis2-competition-submission.zip`. Those source archives are not the DHIS2 installable app artifact. To install the competition submission in DHIS2, use the `rade-for-dhis2-1.0.0.zip` asset attached to the release, or check out the tagged source and build it with `npm run build`.
 
 ## What this app does
 
 - Runs as a DHIS2 App Platform app using `d2.config.js`, `@dhis2/cli-app-scripts`, `@dhis2/app-runtime`, and `@dhis2/ui`.
-- Presents a rabies exposure intake workflow with the polished app title **RaDE for DHIS2** and subtitle **Rabies exposure decision support for DHIS2 Tracker**.
+- Presents a rabies exposure intake workflow with the app title **RaDE: Rabies Exposure Decision Support** and subtitle **Rabies exposure decision support for DHIS2 Tracker**.
 - Uses bundled demo fixtures under `src/assets/` and `src/fixtures/`; no runtime file dependency outside this repository is required.
 - Applies deterministic local rule-based decision support from the app-facing schema in `src/assets/rabies_intake_v2_with_decision_logic.json`.
 - Shows recommendation status, rationale, missing information, suggested actions, follow-up task suggestions, and note/artifact previews.
@@ -37,7 +51,7 @@ npm test -- --watchAll=false
 The DHIS2 App Platform build writes the installable archive to:
 
 ```text
-build/bundle/rade-for-dhis2-1.0.0.zip
+build/bundle/rade-rabies-exposure-1.0.0.zip
 ```
 
 For the competition package, keeping this zip in the repository is intentional because it is small enough for review. If a future release omits the zip from Git, download it from the GitHub Releases page for `https://github.com/EmilAP/rade-for-dhis2` or rebuild it with `npm run build`.
@@ -70,11 +84,11 @@ Known non-blocking toolchain output may include App Platform dependency deprecat
 
 ## Install Into DHIS2 App Management
 
-1. Build the app with `npm run build`, or use `build/bundle/rade-for-dhis2-1.0.0.zip` if present.
+1. Build the app with `npm run build`, or use `build/bundle/rade-rabies-exposure-1.0.0.zip` if present.
 2. Sign in to a DHIS2 instance as a user allowed to manage apps.
 3. Open **App Management**.
-4. Upload `build/bundle/rade-for-dhis2-1.0.0.zip`.
-5. Open **RaDE for DHIS2** from the DHIS2 app menu.
+4. Upload `build/bundle/rade-rabies-exposure-1.0.0.zip`.
+5. Open **RaDE: Rabies Exposure Decision Support** from the DHIS2 app menu.
 
 DHIS2 Tracker remains the system of record. Production use requires local Tracker metadata mapping before validation/import paths are enabled for real data.
 
@@ -99,6 +113,10 @@ WHO SEARO provides the demo decision-tree basis. UKHSA is used only as a terrest
 
 ## Documentation
 
+- [docs/app-hub-submission-readiness.md](docs/app-hub-submission-readiness.md)
+- [docs/app-hub-security-checklist.md](docs/app-hub-security-checklist.md)
+- [docs/app-hub-screenshots.md](docs/app-hub-screenshots.md)
+- [docs/app-hub-icon-brief.md](docs/app-hub-icon-brief.md)
 - [docs/install-in-dhis2.md](docs/install-in-dhis2.md)
 - [docs/local-development.md](docs/local-development.md)
 - [docs/metadata-mapping.md](docs/metadata-mapping.md)
@@ -121,10 +139,16 @@ WHO SEARO provides the demo decision-tree basis. UKHSA is used only as a terrest
 
 Submitted product: **RaDE for DHIS2**.
 
+Recommended future App Hub name: **RaDE: Rabies Exposure Decision Support**.
+
+Frozen competition release: `v0.1.0-dhis2-competition-submission`.
+
+Competition form artifact: `rade-for-dhis2-1.0.0.zip`.
+
 Recommended documentation URL for the DHIS2 App Competition form:
 
 ```text
 https://github.com/EmilAP/rade-for-dhis2/blob/main/README.md
 ```
 
-Recommended artifact: `build/bundle/rade-for-dhis2-1.0.0.zip`.
+Current `main` branch build artifact: `build/bundle/rade-rabies-exposure-1.0.0.zip`.

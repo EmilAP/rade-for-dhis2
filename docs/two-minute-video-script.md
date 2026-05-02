@@ -12,18 +12,17 @@
 
 ## Click path during recording
 
-1. Start on the **Rabies Intake** tab.
+1. Start on the **Intake** tab.
 2. Click **Load sample**.
 3. Point to the left intake status and right **Decision support** panel.
 4. Click **Validate / Run Demo**.
-5. Click **Demo Output / Tracker Payload**.
+5. Click **Demo Output**.
 6. Point to the recommendation, rationale, suggested actions, and payload preview.
-7. Click **Metadata Mapping / Readiness**.
+7. Click **Metadata Readiness**.
 8. Point to metadata readiness / placeholder warnings.
 9. Stop recording.
 
 ---
-
 ## 0:00–0:15 — Intro
 
 **Say:**
@@ -32,7 +31,7 @@
 
 **Screen:**
 
-Start on the **Rabies Intake** tab, empty state.
+Start on the **Intake** tab, empty state.
 
 ---
 
@@ -97,7 +96,7 @@ Click **Validate / Run Demo**.
 
 **Action:**
 
-Click **Demo Output / Tracker Payload**.
+Click **Demo Output**.
 
 **Screen:**
 
@@ -125,7 +124,7 @@ Point to the Tracker payload or payload preview area.
 
 **Action:**
 
-Click **Metadata Mapping / Readiness**.
+Click **Metadata Readiness**.
 
 Stop recording.
 

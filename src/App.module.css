@@ -1,0 +1,699 @@
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.header {
+    background: linear-gradient(135deg, var(--colors-grey050), white 72%);
+    border: 1px solid var(--colors-grey300);
+    border-radius: 8px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px;
+}
+
+.title {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--colors-grey900);
+}
+
+.subtitle {
+    margin: 5px 0 0 0;
+    font-size: 16px;
+    color: var(--colors-grey800);
+    font-weight: 650;
+}
+
+.valueProp {
+    color: var(--colors-grey700);
+    font-size: 14px;
+    line-height: 1.45;
+    margin: 10px 0 0;
+    max-width: 760px;
+}
+
+.headerMeta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.valueGrid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 12px;
+}
+
+.valueCard {
+    background: white;
+    border: 1px solid var(--colors-grey300);
+    border-radius: 8px;
+    padding: 14px 16px;
+}
+
+.valueCard h2 {
+    color: var(--colors-grey900);
+    font-size: 15px;
+    margin: 0 0 6px;
+}
+
+.valueCard p {
+    color: var(--colors-grey700);
+    font-size: 13px;
+    line-height: 1.45;
+    margin: 0;
+}
+
+.demoNotice {
+    background: var(--colors-blue050);
+    border: 1px solid var(--colors-blue200);
+    border-radius: 8px;
+    color: var(--colors-blue900);
+    font-size: 13px;
+    line-height: 1.45;
+    margin-bottom: 12px;
+    padding: 10px 12px;
+}
+
+.evidencePanel {
+    background: white;
+    border: 1px solid var(--colors-grey300);
+    border-radius: 8px;
+    color: var(--colors-grey800);
+    font-size: 13px;
+    margin-bottom: 12px;
+    padding: 12px 14px;
+}
+
+.evidencePanel summary {
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.evidenceGrid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 12px;
+}
+
+.evidenceItem {
+    background: var(--colors-grey050);
+    border: 1px solid var(--colors-grey300);
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.evidenceItem span {
+    color: var(--colors-grey700);
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.evidenceItem p,
+.evidenceScope {
+    line-height: 1.45;
+    margin: 0;
+}
+
+.evidenceItem a {
+    color: var(--colors-blue700);
+    display: block;
+    margin-top: 6px;
+    overflow-wrap: anywhere;
+}
+
+.evidenceScope {
+    color: var(--colors-grey700);
+    margin-top: 10px;
+}
+
+.tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--colors-grey300);
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.tabButton {
+    border: 0;
+    border-bottom: 3px solid transparent;
+    background: transparent;
+    color: var(--colors-grey700);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    padding: 10px 12px;
+    white-space: nowrap;
+}
+
+.activeTab {
+    border-bottom-color: var(--colors-blue600);
+    color: var(--colors-blue700);
+}
+
+.content {
+    min-height: 480px;
+}
+
+.pageGrid {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.decisionLayout {
+    align-items: start;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 260px minmax(0, 1fr) 360px;
+}
+
+.leftRail,
+.rightRail {
+    position: sticky;
+    top: 18px;
+}
+
+.rightRail {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mainPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sidePanel {
+    position: sticky;
+    top: 24px;
+}
+
+.outputGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.card {
+    padding: 20px;
+}
+
+.cardTitle {
+    margin: 0 0 12px;
+    color: var(--colors-grey900);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.subheading {
+    margin: 18px 0 8px;
+    color: var(--colors-grey800);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.muted {
+    color: var(--colors-grey600);
+    margin: 0;
+}
+
+.actionBar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.progressText {
+    color: var(--colors-grey700);
+    font-size: 13px;
+    font-weight: 650;
+    margin-bottom: 8px;
+}
+
+.progressSubtext {
+    color: var(--colors-grey600);
+    font-size: 12px;
+    line-height: 1.4;
+    margin: -3px 0 8px;
+}
+
+.statusStack {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.statusStack div {
+    background: var(--colors-grey050);
+    border: 1px solid var(--colors-grey300);
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.statusStack span {
+    color: var(--colors-grey600);
+    display: block;
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.statusStack strong {
+    color: var(--colors-grey900);
+    display: block;
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+.progressTrack {
+    background: var(--colors-grey300);
+    border-radius: 999px;
+    height: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.progressFill {
+    background: var(--colors-blue600);
+    height: 100%;
+}
+
+.sectionList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sectionButton {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: var(--colors-grey800);
+    cursor: pointer;
+    display: grid;
+    font: inherit;
+    gap: 8px;
+    grid-template-columns: 1fr auto;
+    padding: 8px;
+    text-align: left;
+}
+
+.sectionButton small {
+    color: var(--colors-grey600);
+}
+
+.activeSection {
+    background: var(--colors-blue050);
+    border-color: var(--colors-blue500);
+    color: var(--colors-blue800);
+}
+
+.questionList {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.questionBlock {
+    border-top: 1px solid var(--colors-grey300);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 14px;
+}
+
+.questionBlock:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.questionMeta {
+    align-items: center;
+    color: var(--colors-grey600);
+    display: flex;
+    font-size: 12px;
+    gap: 8px;
+}
+
+.helperText {
+    color: var(--colors-grey600);
+    font-size: 13px;
+    margin: -2px 0 2px;
+}
+
+.questionText {
+    color: var(--colors-grey900);
+    font-weight: 600;
+}
+
+.control,
+.textarea,
+.multiControl,
+.mappingArea {
+    border: 1px solid var(--colors-grey400);
+    border-radius: 6px;
+    color: var(--colors-grey900);
+    font: inherit;
+    max-width: 100%;
+    padding: 9px 10px;
+    width: 100%;
+}
+
+.textarea {
+    resize: vertical;
+}
+
+.multiControl {
+    min-height: 120px;
+}
+
+.choiceRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.choiceButton,
+.checkboxOption {
+    background: white;
+    border: 1px solid var(--colors-grey400);
+    border-radius: 6px;
+    color: var(--colors-grey900);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    padding: 9px 11px;
+}
+
+.choiceButton:hover,
+.checkboxOption:hover {
+    border-color: var(--colors-blue600);
+}
+
+.choiceSelected {
+    background: var(--colors-blue050);
+    border-color: var(--colors-blue600);
+    color: var(--colors-blue800);
+}
+
+.checkboxList {
+    display: grid;
+    gap: 8px;
+}
+
+.checkboxOption {
+    align-items: flex-start;
+    display: flex;
+    gap: 8px;
+    line-height: 1.35;
+}
+
+.checkboxOption input {
+    margin-top: 2px;
+}
+
+.mappingArea {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    min-height: 320px;
+}
+
+.outputStatus {
+    background: var(--colors-yellow100);
+    border: 1px solid var(--colors-yellow300);
+    border-radius: 6px;
+    color: var(--colors-yellow900);
+    display: inline-block;
+    font-weight: 700;
+    margin: 0 0 12px;
+    padding: 5px 8px;
+}
+
+.summaryCard p {
+    margin: 0;
+}
+
+.severityBanner {
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 750;
+    line-height: 1.35;
+    margin-bottom: 12px;
+    padding: 10px 12px;
+}
+
+.severityRed {
+    background: var(--colors-red050);
+    border: 1px solid var(--colors-red300);
+    color: var(--colors-red800);
+}
+
+.severityOrange {
+    background: var(--colors-yellow050);
+    border: 1px solid var(--colors-yellow300);
+    color: var(--colors-yellow900);
+}
+
+.severityGreen {
+    background: var(--colors-green050);
+    border: 1px solid var(--colors-green300);
+    color: var(--colors-green800);
+}
+
+.severityGrey {
+    background: var(--colors-grey100);
+    border: 1px solid var(--colors-grey300);
+    color: var(--colors-grey800);
+}
+
+.summaryRows {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 1fr;
+    margin-bottom: 10px;
+}
+
+.summaryRows div {
+    background: var(--colors-grey050);
+    border: 1px solid var(--colors-grey300);
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.summaryLabel {
+    color: var(--colors-grey600);
+    display: block;
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.sourceNote,
+.disclaimer,
+.safetyNotice {
+    color: var(--colors-grey700);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.disclaimer,
+.safetyNotice {
+    background: var(--colors-grey050);
+    border: 1px solid var(--colors-grey300);
+    border-radius: 6px;
+    padding: 9px 11px;
+}
+
+.safetyNotice {
+    background: var(--colors-yellow050);
+    border-color: var(--colors-yellow300);
+    color: var(--colors-yellow900);
+    margin-bottom: 14px;
+}
+
+.safetyNoticeCompact {
+    margin: 12px 0 0;
+}
+
+.derivedList {
+    display: grid;
+    gap: 8px;
+}
+
+.derivedItem {
+    border-bottom: 1px solid var(--colors-grey300);
+    display: grid;
+    gap: 3px;
+    padding-bottom: 8px;
+}
+
+.derivedItem:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.derivedItem span,
+.derivedItem small {
+    color: var(--colors-grey600);
+    font-size: 12px;
+}
+
+.derivedItem strong {
+    color: var(--colors-grey900);
+}
+
+.contextList,
+.debugGrid {
+    display: grid;
+    gap: 5px 10px;
+    grid-template-columns: minmax(90px, auto) 1fr;
+    margin: 0;
+}
+
+.contextList dt,
+.debugGrid dt {
+    color: var(--colors-grey600);
+    font-size: 12px;
+}
+
+.contextList dd,
+.debugGrid dd {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.debugToggle {
+    align-items: center;
+    color: var(--colors-grey700);
+    display: flex;
+    font-size: 12px;
+    gap: 6px;
+}
+
+.debugDetails {
+    background: var(--colors-grey050);
+    border: 1px solid var(--colors-grey300);
+    border-radius: 6px;
+    padding: 8px 10px;
+}
+
+.debugDetails summary,
+.advancedBlock summary {
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.sectionNav {
+    border-top: 1px solid var(--colors-grey300);
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    margin-top: 18px;
+    padding-top: 14px;
+}
+
+.advancedBlock {
+    border-top: 1px solid var(--colors-grey300);
+    margin-top: 14px;
+    padding-top: 12px;
+}
+
+.compactList {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.compactList li {
+    margin-bottom: 6px;
+}
+
+.preview {
+    background: var(--colors-grey100);
+    border: 1px solid var(--colors-grey300);
+    border-radius: 6px;
+    color: var(--colors-grey900);
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 0;
+    max-height: 520px;
+    overflow: auto;
+    padding: 12px;
+    white-space: pre-wrap;
+}
+
+.warningText {
+    color: var(--colors-yellow900);
+    font-weight: 600;
+}
+
+.errorBox,
+.warnBox,
+.okBox {
+    border-radius: 6px;
+    margin: 10px 0;
+    padding: 10px 12px;
+}
+
+.errorBox {
+    background: var(--colors-red050);
+    border: 1px solid var(--colors-red300);
+    color: var(--colors-red800);
+}
+
+.warnBox {
+    background: var(--colors-yellow050);
+    border: 1px solid var(--colors-yellow300);
+    color: var(--colors-yellow900);
+}
+
+.okBox {
+    background: var(--colors-green050);
+    border: 1px solid var(--colors-green300);
+    color: var(--colors-green800);
+}
+
+@media (max-width: 768px) {
+    .header,
+    .pageGrid,
+    .decisionLayout,
+    .outputGrid,
+    .valueGrid,
+    .evidenceGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .header {
+        flex-direction: column;
+    }
+
+    .sidePanel,
+    .leftRail,
+    .rightRail {
+        position: static;
+    }
+}

@@ -1,0 +1,186 @@
+{
+  "demo_metadata_scaffold": {
+    "extension_name": "RaDE for DHIS2",
+    "schema_path": "data/canonical/rabies_intake_v2_dhis2_competition.json",
+    "scenario_path": "examples/dhis2-rabies-competition-scenario.json",
+    "tracker_payload_path": "output/dhis2-competition/dhis2-tracker-payload.json",
+    "mapping_manifest_path": "output/dhis2-competition/dhis2-mapping-manifest.json"
+  },
+  "deployment_specific_mappings": {
+    "orgUnit": "PLACEHOLDER_ORG_UNIT",
+    "program": "RADE_PROG_001",
+    "trackedEntityType": "RADE_TET_PERSON",
+    "dataElementPattern": "RADE_DE_<QUESTION_ID>"
+  },
+  "production_warning": "The RADE_* and PLACEHOLDER_* identifiers are demo placeholders. Replace them with local DHIS2 metadata UIDs and validate with /api/tracker?importMode=VALIDATE before production import.",
+  "scenario": {
+    "id": "dhis2_competition_stray_dog_bite_india",
+    "title": "Stray dog bite during travel, animal unavailable",
+    "description": "Small demo scenario for RaDE for DHIS2. A patient reports a high-priority Category III exposure from a stray dog in India. The animal is unavailable and prior rabies vaccination is denied."
+  },
+  "schema": {
+    "schema_id": "rabies_intake_v2",
+    "version": "2.0.0",
+    "question_count": 31
+  },
+  "canonical_answers": {
+    "answered_count": 31,
+    "unanswered_count": 0,
+    "payload_id": "payload_1777683604384",
+    "derived_facts": [
+      {
+        "fact_id": "df_is_mammal",
+        "value": true,
+        "source_question_ids": [
+          "c04"
+        ],
+        "derivation": "Animal type is not 'non_mammal' → is_mammal = true"
+      },
+      {
+        "fact_id": "df_bat_involved",
+        "value": false,
+        "source_question_ids": [
+          "c04"
+        ],
+        "derivation": "Animal type is 'bat' → bat_involved"
+      },
+      {
+        "fact_id": "df_has_relevant_exposure",
+        "value": true,
+        "source_question_ids": [
+          "c12"
+        ],
+        "derivation": "Any exposure characteristic selected → relevant exposure"
+      },
+      {
+        "fact_id": "df_animal_available",
+        "value": false,
+        "source_question_ids": [
+          "c25"
+        ],
+        "derivation": "Animal is available for investigation/quarantine/testing"
+      },
+      {
+        "fact_id": "df_high_priority_victim",
+        "value": true,
+        "source_question_ids": [
+          "c15",
+          "c16"
+        ],
+        "derivation": "Victim <14 years or multiple/deep wounds → high priority"
+      },
+      {
+        "fact_id": "df_prior_vaccination",
+        "value": false,
+        "source_question_ids": [
+          "c29"
+        ],
+        "derivation": "Patient has prior rabies vaccination"
+      },
+      {
+        "fact_id": "df_immunocompromised",
+        "value": false,
+        "source_question_ids": [
+          "c37"
+        ],
+        "derivation": "Patient currently immunocompromised"
+      }
+    ]
+  },
+  "recommendation": {
+    "status": "placeholder_assessment_generated",
+    "code": "manual_review_required",
+    "rationale": {
+      "summary": "Canonical rabies decision flow is not yet integrated. This is a structural placeholder assessment.",
+      "lines": [
+        "31/31 questions answered",
+        "2 risk signal(s) detected from derived facts",
+        "0 unanswered core question(s)",
+        "Final recommendation requires canonical flow integration"
+      ],
+      "flow_dependency": "rade_canonical_rabies_flow (not yet finalized)"
+    },
+    "risk_signals": [
+      "relevant_exposure_present",
+      "high_priority_victim"
+    ]
+  },
+  "missing_information_prompts": [],
+  "follow_up_task_suggestions": [
+    {
+      "task_type": "clinical_review",
+      "priority": "high",
+      "due": "same_day",
+      "description": "Review Category III exposure and determine PEP/RIG plan according to local protocol."
+    },
+    {
+      "task_type": "animal_investigation",
+      "priority": "routine",
+      "due": "as_available",
+      "description": "Record whether the animal can be located, observed, quarantined, or tested."
+    },
+    {
+      "task_type": "follow_up_schedule",
+      "priority": "high",
+      "due": "after_day_0_decision",
+      "description": "If PEP is started, schedule vaccine follow-up visits and document RIG decision."
+    }
+  ],
+  "artifacts": {
+    "clinician_note_path": "output/dhis2-competition/clinician-note.txt",
+    "public_health_note_path": "output/dhis2-competition/public-health-report.txt"
+  },
+  "dhis2_validation": {
+    "valid": false,
+    "placeholderUids": [
+      "RADE_TET_PERSON",
+      "PLACEHOLDER_ORG_UNIT",
+      "RADE_PROG_001",
+      "RADE_PS_INTAKE",
+      "RADE_PS_ASSESS",
+      "RADE_DE_C02",
+      "RADE_DE_C03",
+      "RADE_DE_GEO02",
+      "RADE_DE_GEO03",
+      "RADE_DE_W01",
+      "RADE_DE_C04",
+      "RADE_DE_C04_SPECIES_DETAIL",
+      "RADE_DE_W02",
+      "RADE_DE_W03",
+      "RADE_DE_C14",
+      "RADE_DE_C15",
+      "RADE_DE_C16",
+      "RADE_DE_W04",
+      "RADE_DE_C13",
+      "RADE_DE_C18",
+      "RADE_DE_C19",
+      "RADE_DE_C20",
+      "RADE_DE_C23",
+      "RADE_DE_C24",
+      "RADE_DE_C25",
+      "RADE_DE_C26",
+      "RADE_DE_C27",
+      "RADE_DE_C28",
+      "RADE_DE_W05",
+      "RADE_DE_C12",
+      "RADE_DE_C17",
+      "RADE_DE_C37",
+      "RADE_DE_C29",
+      "RADE_DE_C30",
+      "RADE_DE_C44",
+      "RADE_DE_W06",
+      "RADE_DE_ASSESS_STATUS",
+      "RADE_DE_RECOMMEND",
+      "RADE_DE_LOGIC_VER",
+      "RADE_DE_RISK_SIGNALS",
+      "RADE_DE_FOLLOWUP_NEEDED",
+      "RADE_DE_ASSESS_NOTES"
+    ],
+    "missingRequiredFields": [],
+    "warnings": [
+      "orgUnit is placeholder — must be set to a real DHIS2 org unit UID",
+      "42 placeholder UID(s) must be replaced with real DHIS2 UIDs before import"
+    ],
+    "readyForValidateEndpoint": false
+  }
+}

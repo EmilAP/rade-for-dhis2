@@ -1,0 +1,26 @@
+{
+    "name": "rade-for-dhis2",
+    "version": "1.0.0",
+    "description": "RaDE for DHIS2 rabies exposure intake, local demo decision support, and Tracker payload generation",
+    "license": "BSD-3-Clause",
+    "private": true,
+    "scripts": {
+        "start": "d2-app-scripts start",
+        "start:force": "d2-app-scripts start --force",
+        "start:local": "REACT_APP_DHIS2_BASE_URL=http://localhost:8082 d2-app-scripts start --force --proxy http://localhost:8080 --proxyPort 8082",
+        "build": "d2-app-scripts build",
+        "pack": "d2-app-scripts build",
+        "test": "d2-app-scripts test"
+    },
+    "devDependencies": {
+        "@dhis2/cli-app-scripts": "^12.11.0"
+    },
+    "dependencies": {
+        "@dhis2/app-runtime": "^3.11.0",
+        "@dhis2/d2-i18n": "^1.2.0",
+        "@dhis2/ui": "^9.0.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "styled-jsx": "^4.0.1"
+    }
+}

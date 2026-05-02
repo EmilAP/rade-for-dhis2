@@ -1,0 +1,4943 @@
+{
+  "schema_id": "rabies_intake_v2_with_decision_logic",
+  "title": "RaDE Rabies Exposure Decision-Support Workflow for DHIS2",
+  "version": "2.1.0",
+  "description": "WHO-aligned, decision-tree-ready rabies PEP intake checklist for the RaDE DHIS2 app competition. This version preserves the RaDE-compatible JSON shape while adding structured country-level geography, an embedded UKHSA terrestrial mammal rabies risk-by-country catalog, optional future-ready subnational detail, an explicit bat lyssavirus special-context derived field, and a revised global rabies-relevant animal taxonomy. The animal taxonomy distinguishes owned/stray/feral/unknown dogs and cats, separates domestic ferrets from wild mustelids, separates vampire bats from other bats, and adds globally relevant carnivore, livestock, herbivore, low-risk mammal, captive/exotic, and non-mammal groupings. The taxonomy is a rabies-risk and public-health-management taxonomy, not a complete mammalian taxonomy. Adds executable WHO SEARO RPEP decision_support overlay with terminal rules, derived-field rules, UI visibility rules, outcomes, and tests.",
+  "sources": [
+    {
+      "key": "who",
+      "schema_id": "who_searo_rabies_pep_decision_tree",
+      "title": "WHO SEARO Rabies Post-Exposure Prophylaxis Decision Tree",
+      "question_count": 22
+    },
+    {
+      "key": "additional",
+      "schema_id": "rade_operational_context",
+      "title": "RaDE operational/context fields and global epidemiology taxonomy retained for demo usability",
+      "question_count": 10
+    },
+    {
+      "key": "country_epidemiology_overlay",
+      "schema_id": "ukhsa_terrestrial_mammal_rabies_country_risk_v1",
+      "title": "UKHSA terrestrial mammal country-risk overlay, with separate bat lyssavirus context",
+      "question_count": 2,
+      "resolution_levels": [
+        "country_or_territory",
+        "future_subnational_area"
+      ]
+    }
+  ],
+  "validation": {
+    "who_decision_nodes_represented": 22,
+    "additional_operational_questions": 9,
+    "ontario_specific_questions_removed": 21,
+    "canonical_total": 31,
+    "format_change": "top_level_shape_preserved_with_additive_optional_catalog_fields",
+    "intended_use": "DHIS2 app competition demo; WHO-defensible decision support; UKHSA country-level terrestrial mammal rabies risk output with future subnational and animal-specific overlay support",
+    "version_change_summary": "Creates rabies_intake_v2 from rabies_intake_v1; preserves the UKHSA terrestrial mammal country risk overlay; adds an explicit bat lyssavirus special-context derived field, including Australia/Australian bat lyssavirus handling; refines selected global animal taxonomy labels for camelids, herpestids, large rodents, marine mammals, and megafauna.",
+    "structured_geography_questions_added": 2,
+    "animal_taxonomy_revised": true,
+    "animal_taxonomy_version": "global_rabies_functional_taxonomy_v3",
+    "dog_cat_domestic_stray_feral_distinctions_added": true,
+    "domestic_ferret_separated_from_mustelids": true,
+    "vampire_bat_separated_from_other_bats": true,
+    "raccoon_dog_separated_from_procyonids": true,
+    "mephitid_and_procyonid_broader_categories_added": true,
+    "ferret_badger_separated_from_other_mustelids": true,
+    "exact_species_or_local_name_field_added": true,
+    "country_subnational_overlay_ready": true,
+    "parse_validation": "passed",
+    "ukhsa_country_level_catalog_added": true,
+    "country_risk_option_count": 272,
+    "subnational_overlay_future_ready": true,
+    "country_risk_scope": "terrestrial_mammals_only_bats_excluded",
+    "bat_lyssavirus_special_context_added": true,
+    "animal_label_precision_updates_added": true,
+    "bat_lyssavirus_country_risk_scope_preserved": "excluded_from_terrestrial_mammal_country_risk",
+    "derived_field_count": 6,
+    "decision_support_added": true,
+    "decision_support_version": "1.0.0",
+    "terminal_rule_count": 23,
+    "outcome_count": 11
+  },
+  "sections": [
+    {
+      "id": "exposure_context",
+      "title": "Exposure context"
+    },
+    {
+      "id": "geographic_epidemiology",
+      "title": "Geographic rabies epidemiology"
+    },
+    {
+      "id": "animal_species",
+      "title": "WHO animal susceptibility screen"
+    },
+    {
+      "id": "exposure_timing",
+      "title": "Exposure timing and animal survival"
+    },
+    {
+      "id": "high_priority_features",
+      "title": "WHO immediate-start features"
+    },
+    {
+      "id": "animal_clinical_features",
+      "title": "Animal clinical features and risk assessment"
+    },
+    {
+      "id": "animal_testing",
+      "title": "Animal rabies testing"
+    },
+    {
+      "id": "animal_availability_observation",
+      "title": "Animal availability, investigation, and quarantine"
+    },
+    {
+      "id": "exposure_characteristics",
+      "title": "WHO wound/exposure category"
+    },
+    {
+      "id": "wound_management",
+      "title": "Wound management"
+    },
+    {
+      "id": "patient_current_status",
+      "title": "Patient current clinical status"
+    },
+    {
+      "id": "patient_prior_vaccination",
+      "title": "Patient prior rabies vaccination history"
+    },
+    {
+      "id": "resource_context",
+      "title": "RIG/RmAb resource context"
+    }
+  ],
+  "questions": [
+    {
+      "id": "c02",
+      "display_order": 1,
+      "section": "exposure_context",
+      "text": "What was the date and time of the exposure?",
+      "origin": "additional",
+      "type": "core",
+      "response_type": "datetime",
+      "options": [],
+      "source_map": {
+        "who_ids": [],
+        "on_ids": []
+      },
+      "rationale": "Exact exposure date/time is essential for determining PEP urgency, observation windows, and whether thresholds such as the WHO 10-day rule apply. Both source checklists reference timing indirectly but neither captures the actual date.",
+      "footnote_refs": [],
+      "inline_notes": [
+        "Used to determine whether the exposure occurred more than 10 days ago for the WHO decision tree."
+      ]
+    },
+    {
+      "id": "c03",
+      "display_order": 2,
+      "section": "exposure_context",
+      "text": "What free-text geographic details are known about where the exposure occurred?",
+      "origin": "additional",
+      "type": "core",
+      "response_type": "free_text",
+      "options": [],
+      "source_map": {
+        "who_ids": [],
+        "on_ids": []
+      },
+      "rationale": "Free-text location detail supports audit, local follow-up, and later country/subnational mapping. Structured epidemiology logic is captured in the country/territory field, with subnational detail retained for future refinement.",
+      "footnote_refs": [],
+      "inline_notes": [
+        "Use this for city, district, landmark, travel itinerary, or narrative location details; automated epidemiology logic uses the structured country/territory field."
+      ]
+    },
+    {
+      "id": "geo02",
+      "display_order": 3,
+      "section": "geographic_epidemiology",
+      "text": "What country or territory did the exposure occur in?",
+      "origin": "additional",
+      "type": "core",
+      "response_type": "enum",
+      "options": [
+        {
+          "value": "afghanistan",
+          "label": "Afghanistan"
+        },
+        {
+          "value": "albania",
+          "label": "Albania"
+        },
+        {
+          "value": "algeria",
+          "label": "Algeria"
+        },
+        {
+          "value": "american_samoa",
+          "label": "American Samoa"
+        },
+        {
+          "value": "andaman_and_nicobar_islands",
+          "label": "Andaman and Nicobar Islands"
+        },
+        {
+          "value": "andorra",
+          "label": "Andorra"
+        },
+        {
+          "value": "angola",
+          "label": "Angola"
+        },
+        {
+          "value": "anguilla",
+          "label": "Anguilla"
+        },
+        {
+          "value": "antarctica",
+          "label": "Antarctica"
+        },
+        {
+          "value": "antigua_and_barbuda",
+          "label": "Antigua and Barbuda"
+        },
+        {
+          "value": "argentina",
+          "label": "Argentina"
+        },
+        {
+          "value": "armenia",
+          "label": "Armenia"
+        },
+        {
+          "value": "aruba",
+          "label": "Aruba"
+        },
+        {
+          "value": "ascension_island",
+          "label": "Ascension Island"
+        },
+        {
+          "value": "australia",
+          "label": "Australia"
+        },
+        {
+          "value": "austria",
+          "label": "Austria"
+        },
+        {
+          "value": "azerbaijan",
+          "label": "Azerbaijan"
+        },
+        {
+          "value": "azores",
+          "label": "Azores"
+        },
+        {
+          "value": "bahamas",
+          "label": "Bahamas"
+        },
+        {
+          "value": "bahrain",
+          "label": "Bahrain"
+        },
+        {
+          "value": "balearic_islands",
+          "label": "Balearic islands"
+        },
+        {
+          "value": "bali",
+          "label": "Bali"
+        },
+        {
+          "value": "bangladesh",
+          "label": "Bangladesh"
+        },
+        {
+          "value": "barbados",
+          "label": "Barbados"
+        },
+        {
+          "value": "belarus",
+          "label": "Belarus"
+        },
+        {
+          "value": "belgium",
+          "label": "Belgium"
+        },
+        {
+          "value": "belize",
+          "label": "Belize"
+        },
+        {
+          "value": "benin",
+          "label": "Benin"
+        },
+        {
+          "value": "bermuda",
+          "label": "Bermuda"
+        },
+        {
+          "value": "bhutan",
+          "label": "Bhutan"
+        },
+        {
+          "value": "bolivia",
+          "label": "Bolivia"
+        },
+        {
+          "value": "borneo",
+          "label": "Borneo"
+        },
+        {
+          "value": "bosnia_and_herzegovina",
+          "label": "Bosnia and Herzegovina"
+        },
+        {
+          "value": "botswana",
+          "label": "Botswana"
+        },
+        {
+          "value": "brazil",
+          "label": "Brazil"
+        },
+        {
+          "value": "british_virgin_islands",
+          "label": "British Virgin Islands"
+        },
+        {
+          "value": "brunei_darussalam",
+          "label": "Brunei Darussalam"
+        },
+        {
+          "value": "bulgaria",
+          "label": "Bulgaria"
+        },
+        {
+          "value": "burkina_faso",
+          "label": "Burkina Faso"
+        },
+        {
+          "value": "burma",
+          "label": "Burma"
+        },
+        {
+          "value": "burundi",
+          "label": "Burundi"
+        },
+        {
+          "value": "cabrera",
+          "label": "Cabrera"
+        },
+        {
+          "value": "cambodia",
+          "label": "Cambodia"
+        },
+        {
+          "value": "cameroon",
+          "label": "Cameroon"
+        },
+        {
+          "value": "canada",
+          "label": "Canada"
+        },
+        {
+          "value": "canary_islands",
+          "label": "Canary Islands"
+        },
+        {
+          "value": "cape_verde",
+          "label": "Cape Verde"
+        },
+        {
+          "value": "cayman_islands",
+          "label": "Cayman Islands"
+        },
+        {
+          "value": "central_african_republic",
+          "label": "Central African Republic"
+        },
+        {
+          "value": "ceuta_north_african_territory_of_spain",
+          "label": "Ceuta (north African territory of Spain)"
+        },
+        {
+          "value": "chad",
+          "label": "Chad"
+        },
+        {
+          "value": "channel_islands",
+          "label": "Channel Islands"
+        },
+        {
+          "value": "chile",
+          "label": "Chile"
+        },
+        {
+          "value": "china",
+          "label": "China"
+        },
+        {
+          "value": "christmas_island",
+          "label": "Christmas Island"
+        },
+        {
+          "value": "cocos_keeling_islands",
+          "label": "Cocos (Keeling) Islands"
+        },
+        {
+          "value": "colombia",
+          "label": "Colombia"
+        },
+        {
+          "value": "comoros",
+          "label": "Comoros"
+        },
+        {
+          "value": "congo_republic",
+          "label": "Congo (Republic)"
+        },
+        {
+          "value": "congo_democratic_republic_of",
+          "label": "Congo (Democratic Republic of)"
+        },
+        {
+          "value": "cook_islands",
+          "label": "Cook Islands"
+        },
+        {
+          "value": "corsica",
+          "label": "Corsica"
+        },
+        {
+          "value": "costa_rica",
+          "label": "Costa Rica"
+        },
+        {
+          "value": "cote_divoire",
+          "label": "Côte d’Ivoire"
+        },
+        {
+          "value": "croatia",
+          "label": "Croatia"
+        },
+        {
+          "value": "cuba",
+          "label": "Cuba"
+        },
+        {
+          "value": "cyprus",
+          "label": "Cyprus"
+        },
+        {
+          "value": "czech_republic",
+          "label": "Czech Republic"
+        },
+        {
+          "value": "czech_republic_within_50km_border_poland_slovakia",
+          "label": "Czech Republic, within 50km border Poland/Slovakia"
+        },
+        {
+          "value": "democratic_republic_of_the_congo",
+          "label": "Democratic Republic of the Congo"
+        },
+        {
+          "value": "denmark",
+          "label": "Denmark"
+        },
+        {
+          "value": "djibouti",
+          "label": "Djibouti"
+        },
+        {
+          "value": "dominica",
+          "label": "Dominica"
+        },
+        {
+          "value": "dominican_republic",
+          "label": "Dominican Republic"
+        },
+        {
+          "value": "east_timor",
+          "label": "East Timor"
+        },
+        {
+          "value": "easter_island",
+          "label": "Easter Island"
+        },
+        {
+          "value": "ecuador",
+          "label": "Ecuador"
+        },
+        {
+          "value": "egypt",
+          "label": "Egypt"
+        },
+        {
+          "value": "el_salvador",
+          "label": "El Salvador"
+        },
+        {
+          "value": "equatorial_guinea",
+          "label": "Equatorial Guinea"
+        },
+        {
+          "value": "eritrea",
+          "label": "Eritrea"
+        },
+        {
+          "value": "estonia",
+          "label": "Estonia"
+        },
+        {
+          "value": "ethiopia",
+          "label": "Ethiopia"
+        },
+        {
+          "value": "faeroe_islands",
+          "label": "Faeroe Islands"
+        },
+        {
+          "value": "falkland_islands",
+          "label": "Falkland Islands"
+        },
+        {
+          "value": "fiji",
+          "label": "Fiji"
+        },
+        {
+          "value": "finland",
+          "label": "Finland"
+        },
+        {
+          "value": "formentera",
+          "label": "Formentera"
+        },
+        {
+          "value": "france",
+          "label": "France"
+        },
+        {
+          "value": "french_guiana",
+          "label": "French Guiana"
+        },
+        {
+          "value": "french_polynesia",
+          "label": "French Polynesia"
+        },
+        {
+          "value": "gabon",
+          "label": "Gabon"
+        },
+        {
+          "value": "galapagos_islands",
+          "label": "Galapagos Islands"
+        },
+        {
+          "value": "gambia_the",
+          "label": "Gambia, The"
+        },
+        {
+          "value": "georgia",
+          "label": "Georgia"
+        },
+        {
+          "value": "germany",
+          "label": "Germany"
+        },
+        {
+          "value": "ghana",
+          "label": "Ghana"
+        },
+        {
+          "value": "gibraltar",
+          "label": "Gibraltar"
+        },
+        {
+          "value": "greece",
+          "label": "Greece"
+        },
+        {
+          "value": "greenland",
+          "label": "Greenland"
+        },
+        {
+          "value": "grenada",
+          "label": "Grenada"
+        },
+        {
+          "value": "guadeloupe",
+          "label": "Guadeloupe"
+        },
+        {
+          "value": "guam",
+          "label": "Guam"
+        },
+        {
+          "value": "guatemala",
+          "label": "Guatemala"
+        },
+        {
+          "value": "guinea",
+          "label": "Guinea"
+        },
+        {
+          "value": "guinea_bissau",
+          "label": "Guinea-Bissau"
+        },
+        {
+          "value": "guyana",
+          "label": "Guyana"
+        },
+        {
+          "value": "haiti",
+          "label": "Haiti"
+        },
+        {
+          "value": "hawaii",
+          "label": "Hawaii"
+        },
+        {
+          "value": "honduras",
+          "label": "Honduras"
+        },
+        {
+          "value": "hong_kong",
+          "label": "Hong Kong"
+        },
+        {
+          "value": "hungary",
+          "label": "Hungary"
+        },
+        {
+          "value": "ibiza",
+          "label": "Ibiza"
+        },
+        {
+          "value": "iceland",
+          "label": "Iceland"
+        },
+        {
+          "value": "india",
+          "label": "India"
+        },
+        {
+          "value": "indonesia",
+          "label": "Indonesia"
+        },
+        {
+          "value": "iran",
+          "label": "Iran"
+        },
+        {
+          "value": "iraq",
+          "label": "Iraq"
+        },
+        {
+          "value": "ireland",
+          "label": "Ireland"
+        },
+        {
+          "value": "isle_of_man",
+          "label": "Isle of Man"
+        },
+        {
+          "value": "israel",
+          "label": "Israel"
+        },
+        {
+          "value": "italy",
+          "label": "Italy"
+        },
+        {
+          "value": "jamaica",
+          "label": "Jamaica"
+        },
+        {
+          "value": "jan_mayen_and_svalbard_norway",
+          "label": "Jan Mayen and Svalbard (Norway)"
+        },
+        {
+          "value": "japan",
+          "label": "Japan"
+        },
+        {
+          "value": "jordan",
+          "label": "Jordan"
+        },
+        {
+          "value": "kazakhstan",
+          "label": "Kazakhstan"
+        },
+        {
+          "value": "kenya",
+          "label": "Kenya"
+        },
+        {
+          "value": "kiribati",
+          "label": "Kiribati"
+        },
+        {
+          "value": "korea_north",
+          "label": "Korea, North"
+        },
+        {
+          "value": "korea_south",
+          "label": "Korea, South"
+        },
+        {
+          "value": "kosovo",
+          "label": "Kosovo"
+        },
+        {
+          "value": "kuwait",
+          "label": "Kuwait"
+        },
+        {
+          "value": "kyrgyzstan",
+          "label": "Kyrgyzstan"
+        },
+        {
+          "value": "laos",
+          "label": "Laos"
+        },
+        {
+          "value": "la_reunion",
+          "label": "La Reunion"
+        },
+        {
+          "value": "latvia",
+          "label": "Latvia"
+        },
+        {
+          "value": "lebanon",
+          "label": "Lebanon"
+        },
+        {
+          "value": "lesotho",
+          "label": "Lesotho"
+        },
+        {
+          "value": "liberia",
+          "label": "Liberia"
+        },
+        {
+          "value": "libya",
+          "label": "Libya"
+        },
+        {
+          "value": "liechtenstein",
+          "label": "Liechtenstein"
+        },
+        {
+          "value": "lithuania",
+          "label": "Lithuania"
+        },
+        {
+          "value": "luxembourg",
+          "label": "Luxembourg"
+        },
+        {
+          "value": "macau_sar",
+          "label": "Macau SAR"
+        },
+        {
+          "value": "macedonia",
+          "label": "Macedonia"
+        },
+        {
+          "value": "madagascar",
+          "label": "Madagascar"
+        },
+        {
+          "value": "madeira_islands",
+          "label": "Madeira Islands"
+        },
+        {
+          "value": "majorca",
+          "label": "Majorca"
+        },
+        {
+          "value": "malawi",
+          "label": "Malawi"
+        },
+        {
+          "value": "malaysia",
+          "label": "Malaysia"
+        },
+        {
+          "value": "maldives",
+          "label": "Maldives"
+        },
+        {
+          "value": "mali",
+          "label": "Mali"
+        },
+        {
+          "value": "malta",
+          "label": "Malta"
+        },
+        {
+          "value": "margarita_island",
+          "label": "Margarita Island"
+        },
+        {
+          "value": "marshall_islands",
+          "label": "Marshall Islands"
+        },
+        {
+          "value": "martinique",
+          "label": "Martinique"
+        },
+        {
+          "value": "mauritania",
+          "label": "Mauritania"
+        },
+        {
+          "value": "mauritius",
+          "label": "Mauritius"
+        },
+        {
+          "value": "mayotte",
+          "label": "Mayotte"
+        },
+        {
+          "value": "melilla_north_african_territory_of_spain",
+          "label": "Melilla (north African territory of Spain)"
+        },
+        {
+          "value": "menorca",
+          "label": "Menorca"
+        },
+        {
+          "value": "mexico",
+          "label": "Mexico"
+        },
+        {
+          "value": "micronesia",
+          "label": "Micronesia"
+        },
+        {
+          "value": "moldova",
+          "label": "Moldova"
+        },
+        {
+          "value": "monaco",
+          "label": "Monaco"
+        },
+        {
+          "value": "mongolia",
+          "label": "Mongolia"
+        },
+        {
+          "value": "montenegro",
+          "label": "Montenegro"
+        },
+        {
+          "value": "montserrat",
+          "label": "Montserrat"
+        },
+        {
+          "value": "morocco",
+          "label": "Morocco"
+        },
+        {
+          "value": "mozambique",
+          "label": "Mozambique"
+        },
+        {
+          "value": "myanmar_burma",
+          "label": "Myanmar (Burma)"
+        },
+        {
+          "value": "namibia",
+          "label": "Namibia"
+        },
+        {
+          "value": "nauru",
+          "label": "Nauru"
+        },
+        {
+          "value": "nepal",
+          "label": "Nepal"
+        },
+        {
+          "value": "netherlands",
+          "label": "Netherlands"
+        },
+        {
+          "value": "netherlands_antilles",
+          "label": "Netherlands Antilles"
+        },
+        {
+          "value": "new_caledonia",
+          "label": "New Caledonia"
+        },
+        {
+          "value": "new_zealand",
+          "label": "New Zealand"
+        },
+        {
+          "value": "nicaragua",
+          "label": "Nicaragua"
+        },
+        {
+          "value": "niger",
+          "label": "Niger"
+        },
+        {
+          "value": "nigeria",
+          "label": "Nigeria"
+        },
+        {
+          "value": "niue",
+          "label": "Niue"
+        },
+        {
+          "value": "norfolk_island",
+          "label": "Norfolk Island"
+        },
+        {
+          "value": "northern_mariana_islands",
+          "label": "Northern Mariana Islands"
+        },
+        {
+          "value": "norway_mainland_only",
+          "label": "Norway (mainland only)"
+        },
+        {
+          "value": "oman",
+          "label": "Oman"
+        },
+        {
+          "value": "pakistan",
+          "label": "Pakistan"
+        },
+        {
+          "value": "palau",
+          "label": "Palau"
+        },
+        {
+          "value": "palestine",
+          "label": "Palestine"
+        },
+        {
+          "value": "panama",
+          "label": "Panama"
+        },
+        {
+          "value": "papua_new_guinea",
+          "label": "Papua New Guinea"
+        },
+        {
+          "value": "paraguay",
+          "label": "Paraguay"
+        },
+        {
+          "value": "peru",
+          "label": "Peru"
+        },
+        {
+          "value": "philippines",
+          "label": "Philippines"
+        },
+        {
+          "value": "pitcairn_islands",
+          "label": "Pitcairn Islands"
+        },
+        {
+          "value": "poland",
+          "label": "Poland"
+        },
+        {
+          "value": "portugal",
+          "label": "Portugal"
+        },
+        {
+          "value": "puerto_rico",
+          "label": "Puerto Rico"
+        },
+        {
+          "value": "qatar",
+          "label": "Qatar"
+        },
+        {
+          "value": "republic_of_korea_south_korea",
+          "label": "Republic of Korea (South Korea)"
+        },
+        {
+          "value": "reunion",
+          "label": "Reunion"
+        },
+        {
+          "value": "romania",
+          "label": "Romania"
+        },
+        {
+          "value": "russian_federation",
+          "label": "Russian Federation"
+        },
+        {
+          "value": "rwanda",
+          "label": "Rwanda"
+        },
+        {
+          "value": "saint_helena",
+          "label": "Saint Helena"
+        },
+        {
+          "value": "saint_kitts_and_nevis",
+          "label": "Saint Kitts and Nevis"
+        },
+        {
+          "value": "saint_lucia",
+          "label": "Saint Lucia"
+        },
+        {
+          "value": "saint_martin_sint_maarten",
+          "label": "Saint Martin/Sint Maarten"
+        },
+        {
+          "value": "saint_pierre_and_miquelon",
+          "label": "Saint Pierre and Miquelon"
+        },
+        {
+          "value": "saint_vincent_and_the_grenadines",
+          "label": "Saint Vincent and the Grenadines"
+        },
+        {
+          "value": "samoa",
+          "label": "Samoa"
+        },
+        {
+          "value": "san_marino",
+          "label": "San Marino"
+        },
+        {
+          "value": "sao_tome_and_principe",
+          "label": "Sao Tome and Principe"
+        },
+        {
+          "value": "saudi_arabia",
+          "label": "Saudi Arabia"
+        },
+        {
+          "value": "senegal",
+          "label": "Senegal"
+        },
+        {
+          "value": "serbia",
+          "label": "Serbia"
+        },
+        {
+          "value": "seychelles",
+          "label": "Seychelles"
+        },
+        {
+          "value": "sierra_leone",
+          "label": "Sierra Leone"
+        },
+        {
+          "value": "singapore",
+          "label": "Singapore"
+        },
+        {
+          "value": "slovakia",
+          "label": "Slovakia"
+        },
+        {
+          "value": "slovenia",
+          "label": "Slovenia"
+        },
+        {
+          "value": "solomon_islands",
+          "label": "Solomon Islands"
+        },
+        {
+          "value": "somalia",
+          "label": "Somalia"
+        },
+        {
+          "value": "south_africa",
+          "label": "South Africa"
+        },
+        {
+          "value": "south_georgia_and_the_south_sandwich_islands",
+          "label": "South Georgia and the South Sandwich Islands"
+        },
+        {
+          "value": "south_sudan",
+          "label": "South Sudan"
+        },
+        {
+          "value": "spain_mainland_balearic_and_canary_islands",
+          "label": "Spain – mainland, Balearic and Canary Islands"
+        },
+        {
+          "value": "spain_north_african_territories_of_ceuta_and_melilla",
+          "label": "Spain – north African territories of Ceuta and Melilla"
+        },
+        {
+          "value": "sri_lanka",
+          "label": "Sri Lanka"
+        },
+        {
+          "value": "sudan",
+          "label": "Sudan"
+        },
+        {
+          "value": "suriname",
+          "label": "Suriname"
+        },
+        {
+          "value": "svalbard",
+          "label": "Svalbard"
+        },
+        {
+          "value": "swaziland",
+          "label": "Swaziland"
+        },
+        {
+          "value": "sweden",
+          "label": "Sweden"
+        },
+        {
+          "value": "switzerland",
+          "label": "Switzerland"
+        },
+        {
+          "value": "syria",
+          "label": "Syria"
+        },
+        {
+          "value": "tahiti",
+          "label": "Tahiti"
+        },
+        {
+          "value": "taiwan",
+          "label": "Taiwan"
+        },
+        {
+          "value": "tajikistan",
+          "label": "Tajikistan"
+        },
+        {
+          "value": "tanzania",
+          "label": "Tanzania"
+        },
+        {
+          "value": "thailand",
+          "label": "Thailand"
+        },
+        {
+          "value": "tibet",
+          "label": "Tibet"
+        },
+        {
+          "value": "timor_leste",
+          "label": "Timor-Leste"
+        },
+        {
+          "value": "togo",
+          "label": "Togo"
+        },
+        {
+          "value": "tokelau",
+          "label": "Tokelau"
+        },
+        {
+          "value": "tonga",
+          "label": "Tonga"
+        },
+        {
+          "value": "trinidad_and_tobago",
+          "label": "Trinidad and Tobago"
+        },
+        {
+          "value": "tunisia",
+          "label": "Tunisia"
+        },
+        {
+          "value": "turkiye",
+          "label": "Türkiye"
+        },
+        {
+          "value": "turkmenistan",
+          "label": "Turkmenistan"
+        },
+        {
+          "value": "turks_and_caicos_islands",
+          "label": "Turks and Caicos Islands"
+        },
+        {
+          "value": "tuvalu",
+          "label": "Tuvalu"
+        },
+        {
+          "value": "uganda",
+          "label": "Uganda"
+        },
+        {
+          "value": "ukraine",
+          "label": "Ukraine"
+        },
+        {
+          "value": "united_arab_emirates",
+          "label": "United Arab Emirates"
+        },
+        {
+          "value": "united_kingdom",
+          "label": "United Kingdom"
+        },
+        {
+          "value": "united_kingdom_imported_animal",
+          "label": "United Kingdom – imported animal"
+        },
+        {
+          "value": "united_states_of_america",
+          "label": "United States of America"
+        },
+        {
+          "value": "uruguay",
+          "label": "Uruguay"
+        },
+        {
+          "value": "uzbekistan",
+          "label": "Uzbekistan"
+        },
+        {
+          "value": "vanuatu",
+          "label": "Vanuatu"
+        },
+        {
+          "value": "venezuela",
+          "label": "Venezuela"
+        },
+        {
+          "value": "vietnam",
+          "label": "Vietnam"
+        },
+        {
+          "value": "virgin_islands",
+          "label": "Virgin Islands"
+        },
+        {
+          "value": "wake_island_and_the_us_pacific_islands",
+          "label": "Wake Island and the US Pacific Islands"
+        },
+        {
+          "value": "wallis_and_futuna_islands",
+          "label": "Wallis and Futuna Islands"
+        },
+        {
+          "value": "western_sahara",
+          "label": "Western Sahara"
+        },
+        {
+          "value": "yemen",
+          "label": "Yemen"
+        },
+        {
+          "value": "zambia",
+          "label": "Zambia"
+        },
+        {
+          "value": "zanzibar",
+          "label": "Zanzibar"
+        },
+        {
+          "value": "zimbabwe",
+          "label": "Zimbabwe"
+        },
+        {
+          "value": "unknown",
+          "label": "Unknown / unable to determine"
+        }
+      ],
+      "source_map": {
+        "who_ids": [],
+        "on_ids": []
+      },
+      "rationale": "Country or territory is used as the national terrestrial mammal rabies epidemiology overlay and maps directly to the embedded UKHSA rabies risk-by-country catalog.",
+      "footnote_refs": [],
+      "inline_notes": [
+        "Used to derive the UKHSA country-level rabies risk for terrestrial mammals. Bat lyssavirus risk is not derived from this country risk level and should be handled through bat exposure guidance and local public health review.",
+        "Australia is a special bat lyssavirus context: classical terrestrial rabies is absent, but Australian bat lyssavirus is relevant for bat exposures.",
+        "Subnational detail may refine this in future versions but does not currently override the national catalog."
+      ]
+    },
+    {
+      "id": "geo03",
+      "display_order": 4,
+      "section": "geographic_epidemiology",
+      "text": "What subnational area did the exposure occur in, if known?",
+      "origin": "additional",
+      "type": "supporting",
+      "response_type": "free_text",
+      "options": [],
+      "source_map": {
+        "who_ids": [],
+        "on_ids": []
+      },
+      "rationale": "Subnational detail is retained for audit and future local terrestrial mammal rabies ecology overlays, including animal-specific or province/state/district risk stratification.",
+      "footnote_refs": [],
+      "inline_notes": [
+        "Optional for the DHIS2 competition demo; retained for future subnational and animal-specific overlays and not used to override the current UKHSA national terrestrial mammal risk output."
+      ]
+    },
+    {
+      "id": "w01",
+      "display_order": 5,
+      "section": "animal_species",
+      "text": "Was the animal a mammal?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q01"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Animal: mammal?",
+      "footnote_refs": [],
+      "inline_notes": [
+        "If no, species is not susceptible to rabies: no PEP indicated; wash exposed areas with soap and water."
+      ]
+    },
+    {
+      "id": "c04",
+      "display_order": 6,
+      "section": "animal_species",
+      "text": "What type of animal was involved?",
+      "origin": "additional",
+      "type": "core",
+      "response_type": "enum",
+      "options": [
+        {
+          "value": "dog_domestic_owned",
+          "label": "Dog - owned/domestic/supervised"
+        },
+        {
+          "value": "dog_stray_free_roaming",
+          "label": "Dog - stray/free-roaming/unowned"
+        },
+        {
+          "value": "dog_feral_wild",
+          "label": "Dog - feral/wild-living"
+        },
+        {
+          "value": "dog_unknown_status",
+          "label": "Dog - ownership or roaming status unknown"
+        },
+        {
+          "value": "cat_domestic_owned",
+          "label": "Cat - owned/domestic/supervised"
+        },
+        {
+          "value": "cat_stray_free_roaming",
+          "label": "Cat - stray/free-roaming/unowned"
+        },
+        {
+          "value": "cat_feral_wild",
+          "label": "Cat - feral/wild-living"
+        },
+        {
+          "value": "cat_unknown_status",
+          "label": "Cat - ownership or roaming status unknown"
+        },
+        {
+          "value": "domestic_ferret",
+          "label": "Domestic ferret"
+        },
+        {
+          "value": "bat_vampire",
+          "label": "Bat - vampire bat"
+        },
+        {
+          "value": "bat_other_or_unknown",
+          "label": "Bat - other or unknown type"
+        },
+        {
+          "value": "wild_canid_fox_jackal_wolf_coyote",
+          "label": "Wild canid - fox, jackal, wolf, coyote, African wild dog, dhole, etc."
+        },
+        {
+          "value": "raccoon_dog",
+          "label": "Raccoon dog"
+        },
+        {
+          "value": "mongoose_meerkat",
+          "label": "Mongoose, meerkat/suricate, or other herpestid"
+        },
+        {
+          "value": "skunk_mephitid",
+          "label": "Skunk or other mephitid"
+        },
+        {
+          "value": "raccoon_procyonid",
+          "label": "Raccoon or other procyonid (e.g., coati, kinkajou, olingo)"
+        },
+        {
+          "value": "ferret_badger",
+          "label": "Ferret-badger"
+        },
+        {
+          "value": "mustelid_other",
+          "label": "Other mustelid (e.g., badger, weasel, otter, mink, marten, fisher, wolverine)"
+        },
+        {
+          "value": "wild_felid",
+          "label": "Wild felid (e.g., bobcat, lynx, cougar, leopard, lion, tiger)"
+        },
+        {
+          "value": "viverrid_civet_genet",
+          "label": "Civet, genet, or other viverrid"
+        },
+        {
+          "value": "hyena_aardwolf",
+          "label": "Hyena or aardwolf"
+        },
+        {
+          "value": "bear",
+          "label": "Bear"
+        },
+        {
+          "value": "other_wild_carnivore",
+          "label": "Other wild carnivore"
+        },
+        {
+          "value": "livestock_ruminant",
+          "label": "Livestock - ruminant or camelid (e.g., cattle, buffalo, sheep, goat, camel, llama, alpaca)"
+        },
+        {
+          "value": "equid",
+          "label": "Horse, donkey, mule, or other equid"
+        },
+        {
+          "value": "pig_suid",
+          "label": "Pig, wild boar, warthog, or other suid"
+        },
+        {
+          "value": "wild_ungulate_large_herbivore",
+          "label": "Wild ungulate, large herbivore, or megafauna (e.g., deer, antelope, elk, moose, kudu, elephant)"
+        },
+        {
+          "value": "nonhuman_primate",
+          "label": "Non-human primate (e.g., monkey, ape, lemur)"
+        },
+        {
+          "value": "large_rodent",
+          "label": "Large rodent (e.g., groundhog/woodchuck, beaver, muskrat, porcupine, capybara, other large hystricomorph rodent)"
+        },
+        {
+          "value": "small_rodent",
+          "label": "Small rodent (e.g., mouse, rat, squirrel, chipmunk, hamster, guinea pig, vole)"
+        },
+        {
+          "value": "rabbit_hare",
+          "label": "Rabbit or hare"
+        },
+        {
+          "value": "shrew_mole_hedgehog",
+          "label": "Shrew, mole, hedgehog, or similar small insectivore"
+        },
+        {
+          "value": "marsupial",
+          "label": "Marsupial (e.g., opossum, possum, wallaby, kangaroo)"
+        },
+        {
+          "value": "xenarthran",
+          "label": "Armadillo, anteater, or sloth"
+        },
+        {
+          "value": "marine_mammal",
+          "label": "Marine mammal (e.g., seal, sea lion, walrus, dolphin, whale)"
+        },
+        {
+          "value": "captive_zoo_exotic_mammal",
+          "label": "Captive, zoo, laboratory, or exotic mammal"
+        },
+        {
+          "value": "other_mammal",
+          "label": "Other mammal"
+        },
+        {
+          "value": "unknown",
+          "label": "Unknown animal"
+        }
+      ],
+      "source_map": {
+        "who_ids": [],
+        "on_ids": [
+          "q13"
+        ]
+      },
+      "source_phrase": "What type of animal was involved?",
+      "footnote_refs": [],
+      "inline_notes": [
+        "Used to derive mammal/rodent/bat/domestic-animal/wildlife flags, terrestrial mammal country-risk interpretation, and bat lyssavirus special-context flags without changing the WHO wound-category logic.",
+        "Select the closest functional group. If exact species or local/common name is known, capture it in the species-detail field.",
+        "This field is not intended to be a complete animal taxonomy; it is a rabies-risk and public-health-management taxonomy."
+      ],
+      "rationale": "Global animal group taxonomy supports rabies exposure review and future animal-specific overlays while retaining a concise intake UI. Categories are functional rabies-risk groups rather than a complete mammalian taxonomy. Dogs and cats are subdivided by ownership/roaming status because this affects vaccination likelihood, animal availability, observation feasibility, and public health management. Domestic ferrets, raccoon dogs, ferret-badgers, vampire bats, mephitids, procyonids, and selected wild carnivore groups are separated because they have distinct regional rabies relevance or operational handling."
+    },
+    {
+      "id": "c04_species_detail",
+      "display_order": 7,
+      "section": "animal_species",
+      "text": "If known, what was the exact species or local/common animal name?",
+      "origin": "additional",
+      "type": "supporting",
+      "response_type": "free_text",
+      "options": [],
+      "source_map": {
+        "who_ids": [],
+        "on_ids": []
+      },
+      "footnote_refs": [],
+      "inline_notes": [
+        "Use local/common name if exact species is uncertain.",
+        "This field supports public health review and future animal-specific, country, and subnational catalog refinement."
+      ],
+      "rationale": "The structured animal group supports decision logic, while free-text species detail preserves local specificity without overloading the intake UI."
+    },
+    {
+      "id": "w02",
+      "display_order": 8,
+      "section": "animal_species",
+      "text": "Was the animal a rodent?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q02"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Animal: rodent?",
+      "footnote_refs": [],
+      "inline_notes": [
+        "WHO decision-tree branch: rodents rarely transmit rabies. For operational overlays, distinguish small rodents from larger rodents such as groundhogs/woodchucks, beavers, porcupines, or capybaras when possible."
+      ]
+    },
+    {
+      "id": "w03",
+      "display_order": 9,
+      "section": "exposure_timing",
+      "text": "Did the exposure occur more than 10 days ago?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q03"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Did the exposure occur >10 days ago?",
+      "footnote_refs": [],
+      "inline_notes": [
+        "For dogs, cats, and domestic ferrets, healthy 10 days after exposure presents no rabies risk. Other animals may require a more conservative 14-day clinical investigation per WHO footnote 1."
+      ]
+    },
+    {
+      "id": "c14",
+      "display_order": 10,
+      "section": "exposure_timing",
+      "text": "Is the animal still alive?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q04"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Is the animal still alive?",
+      "footnote_refs": [
+        "1"
+      ],
+      "inline_notes": [
+        "If exposure was more than 10 days ago and the animal is still alive, PEP is not indicated or can be discontinued, subject to animal species and local policy."
+      ]
+    },
+    {
+      "id": "c15",
+      "display_order": 11,
+      "section": "high_priority_features",
+      "text": "Is the victim less than 14 years old?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "binary_yn",
+      "options": [
+        "yes",
+        "no"
+      ],
+      "group_id": "high_priority_any",
+      "group_evaluation": "any_yes_triggers_start_pep_immediately",
+      "source_map": {
+        "who_ids": [
+          "q05"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Is the victim <14 years?",
+      "footnote_refs": [],
+      "inline_notes": []
+    },
+    {
+      "id": "c16",
+      "display_order": 12,
+      "section": "high_priority_features",
+      "text": "Does the victim have multiple or deep wounds?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "binary_yn",
+      "options": [
+        "yes",
+        "no"
+      ],
+      "group_id": "high_priority_any",
+      "group_evaluation": "any_yes_triggers_start_pep_immediately",
+      "source_map": {
+        "who_ids": [
+          "q06"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Does the victim have multiple or deep wounds?",
+      "footnote_refs": [],
+      "inline_notes": []
+    },
+    {
+      "id": "w04",
+      "display_order": 13,
+      "section": "high_priority_features",
+      "text": "Does the victim have wounds in highly innervated areas?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "binary_yn",
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q07"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Does the victim have wounds in highly innervated areas?",
+      "footnote_refs": [
+        "2"
+      ],
+      "inline_notes": [
+        "Highly innervated areas include head, neck, face, genitals, and hands. A yes response triggers start PEP immediately in the WHO decision tree."
+      ],
+      "group_id": "high_priority_any",
+      "group_evaluation": "any_yes_triggers_start_pep_immediately"
+    },
+    {
+      "id": "c13",
+      "display_order": 14,
+      "section": "high_priority_features",
+      "text": "What is the anatomical site of the wound or exposure?",
+      "origin": "additional",
+      "type": "core",
+      "response_type": "multiselect_any",
+      "items": [
+        {
+          "value": "head",
+          "label": "Head"
+        },
+        {
+          "value": "face",
+          "label": "Face"
+        },
+        {
+          "value": "neck",
+          "label": "Neck"
+        },
+        {
+          "value": "hands",
+          "label": "Hands"
+        },
+        {
+          "value": "genitals",
+          "label": "Genitals"
+        },
+        {
+          "value": "upper_extremity",
+          "label": "Upper extremity (excluding hands)"
+        },
+        {
+          "value": "lower_extremity",
+          "label": "Lower extremity"
+        },
+        {
+          "value": "torso",
+          "label": "Torso"
+        },
+        {
+          "value": "mucous_membrane",
+          "label": "Mucous membrane (eyes, mouth, nasal cavity)"
+        },
+        {
+          "value": "other",
+          "label": "Other"
+        }
+      ],
+      "source_map": {
+        "who_ids": [],
+        "on_ids": []
+      },
+      "rationale": "Anatomical site determines innervation density (head, neck, face, genitals, hands are high-risk) and guides local RIG infiltration. WHO footnote 2 and q07 reference highly innervated areas; capturing the specific site enables automated high-risk flagging.",
+      "footnote_refs": [],
+      "inline_notes": [
+        "Optional structured detail to support the WHO high-innervation branch and RIG infiltration planning."
+      ]
+    },
+    {
+      "id": "c18",
+      "display_order": 15,
+      "section": "animal_clinical_features",
+      "text": "Did the animal show signs of disease consistent with rabies?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q08"
+        ],
+        "on_ids": [
+          "q14"
+        ],
+        "who_text": "Did the animal show any signs of disease consistent with rabies?",
+        "who_source_phrase": "Did the animal show any signs of disease consistent with rabies?",
+        "on_text": "Did the animal display behaviour compatible with rabies?",
+        "on_source_phrase": "Rabies-compatible animal behaviour?"
+      },
+      "redundancy_group": "animal_rabies_signs",
+      "footnote_refs": {
+        "who": [
+          "3"
+        ],
+        "on": [
+          "iv"
+        ]
+      },
+      "inline_notes": []
+    },
+    {
+      "id": "c19",
+      "display_order": 16,
+      "section": "animal_clinical_features",
+      "text": "Did the animal die or disappear within 10 days of the exposure?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "group_id": "concerning_animal_features_any",
+      "group_evaluation": "any_yes_triggers_animal_vaccination_check",
+      "source_map": {
+        "who_ids": [
+          "q09"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Did the animal die or disappear within 10 days of the exposure?",
+      "footnote_refs": [
+        "1"
+      ],
+      "inline_notes": []
+    },
+    {
+      "id": "c20",
+      "display_order": 17,
+      "section": "animal_clinical_features",
+      "text": "Did the animal bite 2 or more people or animals?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "group_id": "concerning_animal_features_any",
+      "group_evaluation": "any_yes_triggers_animal_vaccination_check",
+      "source_map": {
+        "who_ids": [
+          "q10"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Did the animal bite 2 or more people or animals?",
+      "footnote_refs": [],
+      "inline_notes": []
+    },
+    {
+      "id": "c23",
+      "display_order": 18,
+      "section": "animal_testing",
+      "text": "Has the animal been tested for rabies by a WOAH-recommended test?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q11"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Has the animal been tested for rabies by a WOAH recommended test?",
+      "footnote_refs": [],
+      "inline_notes": []
+    },
+    {
+      "id": "c24",
+      "display_order": 19,
+      "section": "animal_testing",
+      "text": "What is the animal rabies test result?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "enum",
+      "options": [
+        {
+          "value": "positive",
+          "label": "Test positive"
+        },
+        {
+          "value": "pending",
+          "label": "Test pending"
+        },
+        {
+          "value": "inconclusive",
+          "label": "Test inconclusive"
+        },
+        {
+          "value": "negative",
+          "label": "Test negative"
+        },
+        {
+          "value": "not_done",
+          "label": "Not done"
+        }
+      ],
+      "source_map": {
+        "who_ids": [
+          "q12"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Test positive / Test pending / inconclusive / Test negative",
+      "footnote_refs": [
+        "4"
+      ],
+      "inline_notes": []
+    },
+    {
+      "id": "c25",
+      "display_order": 20,
+      "section": "animal_availability_observation",
+      "text": "Is the animal available for investigation, quarantine, or rabies testing?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q13"
+        ],
+        "on_ids": [
+          "q12"
+        ],
+        "who_text": "Is the animal available for investigation and quarantine?",
+        "who_source_phrase": "Is the animal available for investigation and quarantine?",
+        "on_text": "Can the animal be identified and located for observation or rabies testing?",
+        "on_source_phrase": "Can the animal be identified and located for observation or rabies testing?"
+      },
+      "redundancy_group": "animal_available_for_observation",
+      "footnote_refs": {
+        "who": [
+          "1"
+        ],
+        "on": []
+      },
+      "inline_notes": []
+    },
+    {
+      "id": "c26",
+      "display_order": 21,
+      "section": "animal_availability_observation",
+      "text": "Is the animal up-to-date on vaccination?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q14"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Is the animal up-to-date on vaccination?",
+      "footnote_refs": [],
+      "inline_notes": []
+    },
+    {
+      "id": "c27",
+      "display_order": 22,
+      "section": "animal_availability_observation",
+      "text": "Was the animal exposed to rabies risk in the last 12 months?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q15"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Was the animal exposed to rabies risk in the last 12 months?",
+      "footnote_refs": [],
+      "inline_notes": []
+    },
+    {
+      "id": "c28",
+      "display_order": 23,
+      "section": "animal_availability_observation",
+      "text": "Was the animal provoked to bite or scratch?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q16"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Was the animal provoked to bite /scratch?",
+      "footnote_refs": [],
+      "inline_notes": []
+    },
+    {
+      "id": "w05",
+      "display_order": 24,
+      "section": "exposure_characteristics",
+      "text": "Which WHO wound/exposure category best describes the exposure?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "enum",
+      "options": [
+        {
+          "value": "category_i",
+          "label": "Category I: animal licks on intact skin, touching or feeding the animal"
+        },
+        {
+          "value": "category_ii",
+          "label": "Category II: minor scratches or abrasions, nibbling of uncovered skin; skin broken but wound not bleeding"
+        },
+        {
+          "value": "category_iii",
+          "label": "Category III: transdermal bites or scratches, licks on broken skin, mucous membrane contamination with saliva, or exposure to a bat"
+        },
+        {
+          "value": "uncertain",
+          "label": "Uncertain / insufficient information"
+        }
+      ],
+      "source_map": {
+        "who_ids": [
+          "wound_category_i",
+          "wound_category_ii",
+          "wound_category_iii"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Skin is intact / Skin is broken but wound not bleeding / Skin is broken and wound bleeding OR mucous membrane contaminated with saliva",
+      "footnote_refs": [],
+      "inline_notes": [
+        "Category I: no PEP indicated, wash exposed areas. Category II: wound washing and ARV unless recent completed PEP pathway applies. Category III: wound washing, RIG/RmAbs, and ARV immediately unless prior vaccination/recent PEP pathway applies. If exposure was to a bat, treat as WHO category III."
+      ]
+    },
+    {
+      "id": "c12",
+      "display_order": 25,
+      "section": "exposure_characteristics",
+      "text": "Which specific exposure mechanisms occurred?",
+      "origin": "additional",
+      "type": "core",
+      "response_type": "multiselect_any",
+      "items": [
+        {
+          "value": "bite_transdermal_or_bleeding",
+          "label": "Bite that penetrated skin or caused bleeding"
+        },
+        {
+          "value": "bite_not_transdermal_or_bleeding",
+          "label": "Bite that did NOT penetrate skin or cause bleeding"
+        },
+        {
+          "value": "scratch_transdermal_or_bleeding",
+          "label": "Scratch that broke skin or caused bleeding"
+        },
+        {
+          "value": "scratch_not_transdermal_or_bleeding",
+          "label": "Scratch that did NOT break skin or cause bleeding"
+        },
+        {
+          "value": "saliva_on_broken_skin",
+          "label": "Saliva contacting broken skin"
+        },
+        {
+          "value": "saliva_on_mucosa",
+          "label": "Saliva contacting mucous membrane"
+        },
+        {
+          "value": "neural_tissue_on_broken_skin_or_mucosa",
+          "label": "Neural tissue contacting broken skin or mucous membrane"
+        }
+      ],
+      "group_evaluation": "any_yes_constitutes_relevant_exposure",
+      "source_map": {
+        "who_ids": [],
+        "on_ids": [
+          "q11"
+        ]
+      },
+      "source_phrase": "Did ANY of the following occur? - Bite / Scratch that broke skin / Saliva contacting broken skin / Saliva contacting mucosa / Neural tissue contacting broken skin or mucosa",
+      "footnote_refs": [
+        "iii"
+      ],
+      "inline_notes": [
+        "Optional structured detail to support or audit the WHO wound-category selection."
+      ]
+    },
+    {
+      "id": "c17",
+      "display_order": 26,
+      "section": "wound_management",
+      "text": "Has thorough wound washing with soap and water and antiseptic application been performed?",
+      "origin": "additional",
+      "type": "core",
+      "response_type": "binary_yn",
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source_map": {
+        "who_ids": [],
+        "on_ids": []
+      },
+      "rationale": "WHO footnote 5 states wound washing is 'a life-saving practice especially for immunocompromised patients' and recommends 15 minutes of washing. ON admin notes describe it as 'imperative and probably the most effective procedure in the prevention of rabies'. Neither checklist captures whether this critical first-aid step has been performed.",
+      "footnote_refs": [],
+      "inline_notes": []
+    },
+    {
+      "id": "c37",
+      "display_order": 27,
+      "section": "patient_current_status",
+      "text": "Is the patient immunocompromised?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q18"
+        ],
+        "on_ids": [
+          "q19"
+        ],
+        "who_text": "Is the patient immunocompromised?",
+        "who_source_phrase": "Patient: immunocompromised?",
+        "on_text": "Is the patient currently immunocompromised or on chloroquine/hydroxychloroquine?",
+        "on_source_phrase": "Is the patient currently immunocompromised or on chloroquine/hydroxychloroquine?"
+      },
+      "redundancy_group": "patient_immunocompromised_current",
+      "footnote_refs": {
+        "who": [],
+        "on": [
+          "vi"
+        ]
+      },
+      "inline_notes": [
+        "In the WHO decision tree, immunocompromise escalates Category II and Category III pathways toward RIG/RmAbs plus ARV, with serology where feasible."
+      ]
+    },
+    {
+      "id": "c29",
+      "display_order": 28,
+      "section": "patient_prior_vaccination",
+      "text": "Has the patient ever received any rabies vaccination?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q19"
+        ],
+        "on_ids": [
+          "q17"
+        ],
+        "who_text": "Has the patient ever received any rabies vaccination?",
+        "who_source_phrase": "Patient: ever received any rabies vaccination?",
+        "on_text": "Has the patient previously received any rabies vaccine?",
+        "on_source_phrase": "Has the patient previously received rabies vaccine?"
+      },
+      "redundancy_group": "patient_prior_rabies_vaccination",
+      "footnote_refs": {
+        "who": [
+          "7",
+          "8"
+        ],
+        "on": [
+          "v"
+        ]
+      },
+      "inline_notes": []
+    },
+    {
+      "id": "c30",
+      "display_order": 29,
+      "section": "patient_prior_vaccination",
+      "text": "Has the patient completed PEP in the past 3 months?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q20"
+        ],
+        "on_ids": [
+          "q18"
+        ],
+        "who_text": "Has the patient completed rabies PEP less than 3 months ago?",
+        "who_source_phrase": "Patient: completed PEP less than 3 months ago?",
+        "on_text": "Did the patient complete an RPEP series in the past 3 months?",
+        "on_source_phrase": "Did the patient complete an RPEP series in the past 3 months?"
+      },
+      "redundancy_group": "patient_recent_pep_completion",
+      "footnote_refs": {
+        "who": [],
+        "on": [
+          "v"
+        ]
+      },
+      "inline_notes": []
+    },
+    {
+      "id": "c44",
+      "display_order": 30,
+      "section": "resource_context",
+      "text": "Is RIG/RmAbs availability limited?",
+      "origin": "who",
+      "type": "policy",
+      "response_type": "ternary_ynu",
+      "options": [
+        "yes",
+        "no",
+        "unknown"
+      ],
+      "source_map": {
+        "who_ids": [
+          "q21"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "RIG/RmABs availability: limited?",
+      "footnote_refs": [],
+      "inline_notes": []
+    },
+    {
+      "id": "w06",
+      "display_order": 31,
+      "section": "resource_context",
+      "text": "Is the patient high-risk according to WHO footnote 9?",
+      "origin": "who",
+      "type": "core",
+      "response_type": "binary_yn",
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source_map": {
+        "who_ids": [
+          "high_risk_footnote_9"
+        ],
+        "on_ids": []
+      },
+      "source_phrase": "Patient: high-risk?",
+      "footnote_refs": [
+        "9"
+      ],
+      "inline_notes": [
+        "High-risk includes multiple bites, deep wounds, bites to highly innervated body parts, severe immunodeficiency, bites from an animal with probable or confirmed rabies, and exposure to a bat. In RIG/RmAbs-limited settings, high-risk status prioritizes RIG/RmAbs with ARV."
+      ]
+    }
+  ],
+  "derived_fields": [
+    {
+      "id": "epi01",
+      "name": "ukhsa_country_terrestrial_mammal_rabies_risk_level",
+      "type": "derived",
+      "source_fields": [
+        "geo02"
+      ],
+      "values": [
+        "high_risk",
+        "low_risk",
+        "low_risk_with_high_risk_terrestrial_species_exception",
+        "no_risk",
+        "contact_rigs",
+        "unknown"
+      ],
+      "description": "Derived UKHSA terrestrial mammal rabies risk level from the selected country or territory. This derived field excludes bats and related bat lyssaviruses."
+    },
+    {
+      "id": "epi02",
+      "name": "rabies_epidemiology_note",
+      "type": "derived",
+      "source_fields": [
+        "geo02",
+        "geo03",
+        "c04",
+        "c04_species_detail"
+      ],
+      "values": "string",
+      "description": "Plain-language note explaining the UKHSA country-level terrestrial mammal rabies risk output, any terrestrial animal-specific exception, and that bat lyssavirus risk and subnational detail require separate handling."
+    },
+    {
+      "id": "epi03",
+      "name": "geography_resolution_used",
+      "type": "derived",
+      "source_fields": [
+        "geo02",
+        "geo03"
+      ],
+      "values": [
+        "country_or_territory",
+        "future_subnational_area",
+        "manual_override",
+        "unknown"
+      ],
+      "description": "Resolution level used to assign the current terrestrial mammal rabies risk output. Current automated output uses country_or_territory; subnational area is retained for future overlays."
+    },
+    {
+      "id": "epi04",
+      "name": "dog_cat_domesticity_status",
+      "type": "derived",
+      "source_fields": [
+        "c04"
+      ],
+      "values": [
+        "owned_or_supervised",
+        "stray_or_free_roaming",
+        "feral_or_wild_living",
+        "unknown",
+        "not_applicable"
+      ],
+      "description": "Derived status for dog/cat exposures to support risk explanation and local policy overlays."
+    },
+    {
+      "id": "epi05",
+      "name": "animal_functional_group",
+      "type": "derived",
+      "source_fields": [
+        "c04",
+        "c04_species_detail"
+      ],
+      "values": [
+        "dog",
+        "cat",
+        "domestic_ferret",
+        "bat_vampire",
+        "bat_other_or_unknown",
+        "wild_canid",
+        "raccoon_dog",
+        "mongoose_or_herpestid",
+        "mephitid",
+        "procyonid",
+        "ferret_badger",
+        "mustelid_other",
+        "wild_felid",
+        "viverrid",
+        "hyena_or_aardwolf",
+        "bear",
+        "other_wild_carnivore",
+        "livestock_ruminant",
+        "equid",
+        "suid",
+        "wild_ungulate_or_large_herbivore",
+        "nonhuman_primate",
+        "large_rodent",
+        "small_rodent",
+        "rabbit_hare",
+        "shrew_mole_hedgehog",
+        "marsupial",
+        "xenarthran",
+        "marine_mammal",
+        "captive_zoo_exotic_mammal",
+        "other_mammal",
+        "unknown"
+      ],
+      "description": "Normalized functional group for downstream risk mapping, derived from the structured animal group and optional species/local-name detail."
+    },
+    {
+      "id": "epi06",
+      "name": "bat_lyssavirus_special_context",
+      "type": "derived",
+      "source_fields": [
+        "geo02",
+        "geo03",
+        "c04",
+        "c04_species_detail"
+      ],
+      "values": [
+        "australia_or_bat_lyssavirus_region",
+        "bat_exposure_outside_terrestrial_country_risk",
+        "not_applicable",
+        "unknown"
+      ],
+      "description": "Derived flag for bat lyssavirus contexts that are not represented by the UKHSA terrestrial mammal country risk output. Australia should derive australia_or_bat_lyssavirus_region for bat exposures because Australian bat lyssavirus is relevant despite no classical terrestrial rabies risk. Other bat exposures should remain outside the terrestrial mammal country-risk output and be handled through bat-specific guidance and local public health review."
+    }
+  ],
+  "epidemiology_catalogs": {
+    "ukhsa_terrestrial_mammal_rabies_country_risk_v1": {
+      "schema_id": "ukhsa_terrestrial_mammal_rabies_country_risk_v1",
+      "version": "1.0.0",
+      "description": "Embedded UKHSA rabies risk-by-country catalog for national terrestrial mammal rabies epidemiology output. The UKHSA country risk levels describe terrestrial animals only: no-risk means no indigenous rabies in terrestrial animals; low-risk means rabies occurs in wild animals but not companion animals; high-risk means rabies occurs in wild and companion animals or there are no data to prove otherwise. Related lyssaviruses in bats are outside this country risk output and require separate bat-exposure handling. Australia is explicitly identified as a bat lyssavirus special context because Australian bat lyssavirus is relevant despite no classical terrestrial rabies risk.",
+      "source": {
+        "name": "UKHSA terrestrial mammal rabies risks by country or territory",
+        "captured_from": "user-provided UKHSA risk-level list",
+        "captured_date": "2026-05-01"
+      },
+      "resolution_levels": [
+        "country_or_territory",
+        "future_subnational_area"
+      ],
+      "default_resolution": "country_or_territory",
+      "risk_level_values": [
+        "High risk",
+        "Low risk",
+        "Low risk but foxes are high risk",
+        "Low risk but foxes, skunks and racoons are high risk",
+        "No risk",
+        "Contact RIgS",
+        "Unknown"
+      ],
+      "risk_code_values": [
+        "high_risk",
+        "low_risk",
+        "low_risk_with_high_risk_terrestrial_species_exception",
+        "no_risk",
+        "contact_rigs",
+        "unknown"
+      ],
+      "country_risk_by_country_or_territory": {
+        "afghanistan": {
+          "label": "Afghanistan",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "albania": {
+          "label": "Albania",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "algeria": {
+          "label": "Algeria",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "american_samoa": {
+          "label": "American Samoa",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "andaman_and_nicobar_islands": {
+          "label": "Andaman and Nicobar Islands",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "andorra": {
+          "label": "Andorra",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "angola": {
+          "label": "Angola",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "anguilla": {
+          "label": "Anguilla",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "antarctica": {
+          "label": "Antarctica",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "antigua_and_barbuda": {
+          "label": "Antigua and Barbuda",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "argentina": {
+          "label": "Argentina",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "armenia": {
+          "label": "Armenia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "aruba": {
+          "label": "Aruba",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "ascension_island": {
+          "label": "Ascension Island",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "australia": {
+          "label": "Australia",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk",
+          "bat_lyssavirus_special_context": "australia_or_bat_lyssavirus_region",
+          "bat_lyssavirus_note": "No classical terrestrial rabies risk is reflected in the terrestrial mammal country risk output; Australian bat lyssavirus remains relevant for bat exposures and should be handled through bat-specific guidance."
+        },
+        "austria": {
+          "label": "Austria",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "azerbaijan": {
+          "label": "Azerbaijan",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "azores": {
+          "label": "Azores",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "bahamas": {
+          "label": "Bahamas",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "bahrain": {
+          "label": "Bahrain",
+          "risk_level": "Low risk",
+          "risk_code": "low_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "balearic_islands": {
+          "label": "Balearic islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "bali": {
+          "label": "Bali",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "bangladesh": {
+          "label": "Bangladesh",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "barbados": {
+          "label": "Barbados",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "belarus": {
+          "label": "Belarus",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "belgium": {
+          "label": "Belgium",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "belize": {
+          "label": "Belize",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "benin": {
+          "label": "Benin",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "bermuda": {
+          "label": "Bermuda",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "bhutan": {
+          "label": "Bhutan",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "bolivia": {
+          "label": "Bolivia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "borneo": {
+          "label": "Borneo",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "bosnia_and_herzegovina": {
+          "label": "Bosnia and Herzegovina",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "botswana": {
+          "label": "Botswana",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "brazil": {
+          "label": "Brazil",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "british_virgin_islands": {
+          "label": "British Virgin Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "brunei_darussalam": {
+          "label": "Brunei Darussalam",
+          "risk_level": "Low risk",
+          "risk_code": "low_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "bulgaria": {
+          "label": "Bulgaria",
+          "risk_level": "Low risk but foxes are high risk",
+          "risk_code": "low_risk_with_high_risk_terrestrial_species_exception",
+          "high_risk_species_exception": [
+            "foxes"
+          ],
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "burkina_faso": {
+          "label": "Burkina Faso",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "burma": {
+          "label": "Burma",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "burundi": {
+          "label": "Burundi",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "cabrera": {
+          "label": "Cabrera",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "cambodia": {
+          "label": "Cambodia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "cameroon": {
+          "label": "Cameroon",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "canada": {
+          "label": "Canada",
+          "risk_level": "Low risk but foxes, skunks and racoons are high risk",
+          "risk_code": "low_risk_with_high_risk_terrestrial_species_exception",
+          "high_risk_species_exception": [
+            "foxes",
+            "skunks",
+            "racoons"
+          ],
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "canary_islands": {
+          "label": "Canary Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "cape_verde": {
+          "label": "Cape Verde",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "cayman_islands": {
+          "label": "Cayman Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "central_african_republic": {
+          "label": "Central African Republic",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "ceuta_north_african_territory_of_spain": {
+          "label": "Ceuta (north African territory of Spain)",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "chad": {
+          "label": "Chad",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "channel_islands": {
+          "label": "Channel Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "chile": {
+          "label": "Chile",
+          "risk_level": "Low risk",
+          "risk_code": "low_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "china": {
+          "label": "China",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "christmas_island": {
+          "label": "Christmas Island",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "cocos_keeling_islands": {
+          "label": "Cocos (Keeling) Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "colombia": {
+          "label": "Colombia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "comoros": {
+          "label": "Comoros",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "congo_republic": {
+          "label": "Congo (Republic)",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "congo_democratic_republic_of": {
+          "label": "Congo (Democratic Republic of)",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "cook_islands": {
+          "label": "Cook Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "corsica": {
+          "label": "Corsica",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "costa_rica": {
+          "label": "Costa Rica",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "cote_divoire": {
+          "label": "Côte d’Ivoire",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "croatia": {
+          "label": "Croatia",
+          "risk_level": "Low risk but foxes are high risk",
+          "risk_code": "low_risk_with_high_risk_terrestrial_species_exception",
+          "high_risk_species_exception": [
+            "foxes"
+          ],
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "cuba": {
+          "label": "Cuba",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "cyprus": {
+          "label": "Cyprus",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "czech_republic": {
+          "label": "Czech Republic",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "czech_republic_within_50km_border_poland_slovakia": {
+          "label": "Czech Republic, within 50km border Poland/Slovakia",
+          "risk_level": "Low risk but foxes are high risk",
+          "risk_code": "low_risk_with_high_risk_terrestrial_species_exception",
+          "high_risk_species_exception": [
+            "foxes"
+          ],
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "democratic_republic_of_the_congo": {
+          "label": "Democratic Republic of the Congo",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "denmark": {
+          "label": "Denmark",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "djibouti": {
+          "label": "Djibouti",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "dominica": {
+          "label": "Dominica",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "dominican_republic": {
+          "label": "Dominican Republic",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "east_timor": {
+          "label": "East Timor",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "easter_island": {
+          "label": "Easter Island",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "ecuador": {
+          "label": "Ecuador",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "egypt": {
+          "label": "Egypt",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "el_salvador": {
+          "label": "El Salvador",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "equatorial_guinea": {
+          "label": "Equatorial Guinea",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "eritrea": {
+          "label": "Eritrea",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "estonia": {
+          "label": "Estonia",
+          "risk_level": "Low risk",
+          "risk_code": "low_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "ethiopia": {
+          "label": "Ethiopia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "faeroe_islands": {
+          "label": "Faeroe Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "falkland_islands": {
+          "label": "Falkland Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "fiji": {
+          "label": "Fiji",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "finland": {
+          "label": "Finland",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "formentera": {
+          "label": "Formentera",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "france": {
+          "label": "France",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "french_guiana": {
+          "label": "French Guiana",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "french_polynesia": {
+          "label": "French Polynesia",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "gabon": {
+          "label": "Gabon",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "galapagos_islands": {
+          "label": "Galapagos Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "gambia_the": {
+          "label": "Gambia, The",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "georgia": {
+          "label": "Georgia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "germany": {
+          "label": "Germany",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "ghana": {
+          "label": "Ghana",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "gibraltar": {
+          "label": "Gibraltar",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "greece": {
+          "label": "Greece",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "greenland": {
+          "label": "Greenland",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "grenada": {
+          "label": "Grenada",
+          "risk_level": "Low risk",
+          "risk_code": "low_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "guadeloupe": {
+          "label": "Guadeloupe",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "guam": {
+          "label": "Guam",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "guatemala": {
+          "label": "Guatemala",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "guinea": {
+          "label": "Guinea",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "guinea_bissau": {
+          "label": "Guinea-Bissau",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "guyana": {
+          "label": "Guyana",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "haiti": {
+          "label": "Haiti",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "hawaii": {
+          "label": "Hawaii",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "honduras": {
+          "label": "Honduras",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "hong_kong": {
+          "label": "Hong Kong",
+          "risk_level": "Low risk",
+          "risk_code": "low_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "hungary": {
+          "label": "Hungary",
+          "risk_level": "Low risk but foxes are high risk",
+          "risk_code": "low_risk_with_high_risk_terrestrial_species_exception",
+          "high_risk_species_exception": [
+            "foxes"
+          ],
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "ibiza": {
+          "label": "Ibiza",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "iceland": {
+          "label": "Iceland",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "india": {
+          "label": "India",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "indonesia": {
+          "label": "Indonesia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "iran": {
+          "label": "Iran",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "iraq": {
+          "label": "Iraq",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "ireland": {
+          "label": "Ireland",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "isle_of_man": {
+          "label": "Isle of Man",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "israel": {
+          "label": "Israel",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "italy": {
+          "label": "Italy",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "jamaica": {
+          "label": "Jamaica",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "jan_mayen_and_svalbard_norway": {
+          "label": "Jan Mayen and Svalbard (Norway)",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "japan": {
+          "label": "Japan",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "jordan": {
+          "label": "Jordan",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "kazakhstan": {
+          "label": "Kazakhstan",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "kenya": {
+          "label": "Kenya",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "kiribati": {
+          "label": "Kiribati",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "korea_north": {
+          "label": "Korea, North",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "korea_south": {
+          "label": "Korea, South",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "kosovo": {
+          "label": "Kosovo",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "kuwait": {
+          "label": "Kuwait",
+          "risk_level": "Low risk",
+          "risk_code": "low_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "kyrgyzstan": {
+          "label": "Kyrgyzstan",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "laos": {
+          "label": "Laos",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "la_reunion": {
+          "label": "La Reunion",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "latvia": {
+          "label": "Latvia",
+          "risk_level": "Low risk but foxes are high risk",
+          "risk_code": "low_risk_with_high_risk_terrestrial_species_exception",
+          "high_risk_species_exception": [
+            "foxes"
+          ],
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "lebanon": {
+          "label": "Lebanon",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "lesotho": {
+          "label": "Lesotho",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "liberia": {
+          "label": "Liberia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "libya": {
+          "label": "Libya",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "liechtenstein": {
+          "label": "Liechtenstein",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "lithuania": {
+          "label": "Lithuania",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "luxembourg": {
+          "label": "Luxembourg",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "macau_sar": {
+          "label": "Macau SAR",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "macedonia": {
+          "label": "Macedonia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "madagascar": {
+          "label": "Madagascar",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "madeira_islands": {
+          "label": "Madeira Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "majorca": {
+          "label": "Majorca",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "malawi": {
+          "label": "Malawi",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "malaysia": {
+          "label": "Malaysia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "maldives": {
+          "label": "Maldives",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "mali": {
+          "label": "Mali",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "malta": {
+          "label": "Malta",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "margarita_island": {
+          "label": "Margarita Island",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "marshall_islands": {
+          "label": "Marshall Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "martinique": {
+          "label": "Martinique",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "mauritania": {
+          "label": "Mauritania",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "mauritius": {
+          "label": "Mauritius",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "mayotte": {
+          "label": "Mayotte",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "melilla_north_african_territory_of_spain": {
+          "label": "Melilla (north African territory of Spain)",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "menorca": {
+          "label": "Menorca",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "mexico": {
+          "label": "Mexico",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "micronesia": {
+          "label": "Micronesia",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "moldova": {
+          "label": "Moldova",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "monaco": {
+          "label": "Monaco",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "mongolia": {
+          "label": "Mongolia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "montenegro": {
+          "label": "Montenegro",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "montserrat": {
+          "label": "Montserrat",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "morocco": {
+          "label": "Morocco",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "mozambique": {
+          "label": "Mozambique",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "myanmar_burma": {
+          "label": "Myanmar (Burma)",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "namibia": {
+          "label": "Namibia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "nauru": {
+          "label": "Nauru",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "nepal": {
+          "label": "Nepal",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "netherlands": {
+          "label": "Netherlands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "netherlands_antilles": {
+          "label": "Netherlands Antilles",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "new_caledonia": {
+          "label": "New Caledonia",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "new_zealand": {
+          "label": "New Zealand",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "nicaragua": {
+          "label": "Nicaragua",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "niger": {
+          "label": "Niger",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "nigeria": {
+          "label": "Nigeria",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "niue": {
+          "label": "Niue",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "norfolk_island": {
+          "label": "Norfolk Island",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "northern_mariana_islands": {
+          "label": "Northern Mariana Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "norway_mainland_only": {
+          "label": "Norway (mainland only)",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "oman": {
+          "label": "Oman",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "pakistan": {
+          "label": "Pakistan",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "palau": {
+          "label": "Palau",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "palestine": {
+          "label": "Palestine",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "panama": {
+          "label": "Panama",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "papua_new_guinea": {
+          "label": "Papua New Guinea",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "paraguay": {
+          "label": "Paraguay",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "peru": {
+          "label": "Peru",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "philippines": {
+          "label": "Philippines",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "pitcairn_islands": {
+          "label": "Pitcairn Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "poland": {
+          "label": "Poland",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "portugal": {
+          "label": "Portugal",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "puerto_rico": {
+          "label": "Puerto Rico",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "qatar": {
+          "label": "Qatar",
+          "risk_level": "Low risk",
+          "risk_code": "low_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "republic_of_korea_south_korea": {
+          "label": "Republic of Korea (South Korea)",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "reunion": {
+          "label": "Reunion",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "romania": {
+          "label": "Romania",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "russian_federation": {
+          "label": "Russian Federation",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "rwanda": {
+          "label": "Rwanda",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "saint_helena": {
+          "label": "Saint Helena",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "saint_kitts_and_nevis": {
+          "label": "Saint Kitts and Nevis",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "saint_lucia": {
+          "label": "Saint Lucia",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "saint_martin_sint_maarten": {
+          "label": "Saint Martin/Sint Maarten",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "saint_pierre_and_miquelon": {
+          "label": "Saint Pierre and Miquelon",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "saint_vincent_and_the_grenadines": {
+          "label": "Saint Vincent and the Grenadines",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "samoa": {
+          "label": "Samoa",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "san_marino": {
+          "label": "San Marino",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "sao_tome_and_principe": {
+          "label": "Sao Tome and Principe",
+          "risk_level": "Low risk",
+          "risk_code": "low_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "saudi_arabia": {
+          "label": "Saudi Arabia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "senegal": {
+          "label": "Senegal",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "serbia": {
+          "label": "Serbia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "seychelles": {
+          "label": "Seychelles",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "sierra_leone": {
+          "label": "Sierra Leone",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "singapore": {
+          "label": "Singapore",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "slovakia": {
+          "label": "Slovakia",
+          "risk_level": "Low risk but foxes are high risk",
+          "risk_code": "low_risk_with_high_risk_terrestrial_species_exception",
+          "high_risk_species_exception": [
+            "foxes"
+          ],
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "slovenia": {
+          "label": "Slovenia",
+          "risk_level": "Low risk but foxes are high risk",
+          "risk_code": "low_risk_with_high_risk_terrestrial_species_exception",
+          "high_risk_species_exception": [
+            "foxes"
+          ],
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "solomon_islands": {
+          "label": "Solomon Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "somalia": {
+          "label": "Somalia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "south_africa": {
+          "label": "South Africa",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "south_georgia_and_the_south_sandwich_islands": {
+          "label": "South Georgia and the South Sandwich Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "south_sudan": {
+          "label": "South Sudan",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "spain_mainland_balearic_and_canary_islands": {
+          "label": "Spain – mainland, Balearic and Canary Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "spain_north_african_territories_of_ceuta_and_melilla": {
+          "label": "Spain – north African territories of Ceuta and Melilla",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "sri_lanka": {
+          "label": "Sri Lanka",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "sudan": {
+          "label": "Sudan",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "suriname": {
+          "label": "Suriname",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "svalbard": {
+          "label": "Svalbard",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "swaziland": {
+          "label": "Swaziland",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "sweden": {
+          "label": "Sweden",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "switzerland": {
+          "label": "Switzerland",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "syria": {
+          "label": "Syria",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "tahiti": {
+          "label": "Tahiti",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "taiwan": {
+          "label": "Taiwan",
+          "risk_level": "Low risk",
+          "risk_code": "low_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "tajikistan": {
+          "label": "Tajikistan",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "tanzania": {
+          "label": "Tanzania",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "thailand": {
+          "label": "Thailand",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "tibet": {
+          "label": "Tibet",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "timor_leste": {
+          "label": "Timor-Leste",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "togo": {
+          "label": "Togo",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "tokelau": {
+          "label": "Tokelau",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "tonga": {
+          "label": "Tonga",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "trinidad_and_tobago": {
+          "label": "Trinidad and Tobago",
+          "risk_level": "Low risk",
+          "risk_code": "low_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "tunisia": {
+          "label": "Tunisia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "turkiye": {
+          "label": "Türkiye",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "turkmenistan": {
+          "label": "Turkmenistan",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "turks_and_caicos_islands": {
+          "label": "Turks and Caicos Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "tuvalu": {
+          "label": "Tuvalu",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "uganda": {
+          "label": "Uganda",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "ukraine": {
+          "label": "Ukraine",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "united_arab_emirates": {
+          "label": "United Arab Emirates",
+          "risk_level": "Low risk",
+          "risk_code": "low_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "united_kingdom": {
+          "label": "United Kingdom",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk",
+          "source_risk_level": "No risk in animals. Low risk in bats",
+          "bat_lyssavirus_note": "The supplied UKHSA text notes low risk in bats, but bats are excluded from the terrestrial mammal country risk output and require separate bat-exposure handling."
+        },
+        "united_kingdom_imported_animal": {
+          "label": "United Kingdom – imported animal",
+          "risk_level": "Contact RIgS",
+          "risk_code": "contact_rigs",
+          "engine_effect": "contact_uk_rabies_immunoglobulin_service_or_local_public_health_authority"
+        },
+        "united_states_of_america": {
+          "label": "United States of America",
+          "risk_level": "Low risk but foxes, skunks and racoons are high risk",
+          "risk_code": "low_risk_with_high_risk_terrestrial_species_exception",
+          "high_risk_species_exception": [
+            "foxes",
+            "skunks",
+            "racoons"
+          ],
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "uruguay": {
+          "label": "Uruguay",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "uzbekistan": {
+          "label": "Uzbekistan",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "vanuatu": {
+          "label": "Vanuatu",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "venezuela": {
+          "label": "Venezuela",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "vietnam": {
+          "label": "Vietnam",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "virgin_islands": {
+          "label": "Virgin Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "wake_island_and_the_us_pacific_islands": {
+          "label": "Wake Island and the US Pacific Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "wallis_and_futuna_islands": {
+          "label": "Wallis and Futuna Islands",
+          "risk_level": "No risk",
+          "risk_code": "no_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "western_sahara": {
+          "label": "Western Sahara",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "yemen": {
+          "label": "Yemen",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "zambia": {
+          "label": "Zambia",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "zanzibar": {
+          "label": "Zanzibar",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "zimbabwe": {
+          "label": "Zimbabwe",
+          "risk_level": "High risk",
+          "risk_code": "high_risk",
+          "engine_effect": "derive_country_level_rabies_risk"
+        },
+        "unknown": {
+          "label": "Unknown / unable to determine",
+          "risk_level": "Unknown",
+          "risk_code": "unknown",
+          "engine_effect": "manual_public_health_review"
+        }
+      },
+      "special_notes": [
+        "Country/territory values are taken from the supplied UKHSA risk-level list and include territories and special geographic entries where listed.",
+        "The current automated epidemiology output is national/country-level for terrestrial mammals only.",
+        "Bats and related lyssaviruses are not classified by this terrestrial mammal country risk output. Bat exposures should be handled through the bat-specific animal/exposure pathway and local public health guidance.",
+        "Australia is explicitly surfaced as a bat lyssavirus special context: classical terrestrial rabies is absent, but Australian bat lyssavirus is relevant for bat exposures.",
+        "Subnational area is retained as an intake field for future local overlays and audit but does not currently override the UKHSA national terrestrial mammal risk value.",
+        "Terrestrial animal-specific exception text is retained where UKHSA lists wildlife exceptions, such as foxes, skunks, or racoons.",
+        "United Kingdom imported animal exposure is represented as a separate listed option because the supplied UKHSA table maps it to Contact RIgS."
+      ],
+      "risk_level_scope": "terrestrial_mammals_only",
+      "bat_lyssavirus_scope": "excluded_from_country_risk_level_handle_separately",
+      "risk_level_definitions": {
+        "no_risk": "No indigenous rabies in terrestrial animals. Related lyssaviruses in bats are separate from this country risk level.",
+        "low_risk": "Rabies occurs in wild terrestrial animals but not in companion animals. Related lyssaviruses in bats are separate from this country risk level.",
+        "high_risk": "Rabies occurs in wild and companion terrestrial animals, or there are no data to prove otherwise. Related lyssaviruses in bats are separate from this country risk level."
+      },
+      "bat_lyssavirus_special_context_values": [
+        "australia_or_bat_lyssavirus_region",
+        "bat_exposure_outside_terrestrial_country_risk",
+        "not_applicable",
+        "unknown"
+      ],
+      "bat_lyssavirus_special_contexts": {
+        "australia": {
+          "label": "Australia",
+          "context": "australia_or_bat_lyssavirus_region",
+          "rationale": "Classical terrestrial rabies is absent, but Australian bat lyssavirus is relevant for bat exposures.",
+          "applies_when_animal_group_in": [
+            "bat_vampire",
+            "bat_other_or_unknown"
+          ],
+          "engine_effect": "do_not_use_terrestrial_country_risk_to_downclassify_bat_exposure_use_bat_specific_guidance_and_local_public_health_review"
+        }
+      }
+    }
+  },
+  "external_catalogs": [
+    {
+      "key": "ukhsa_terrestrial_mammal_rabies_country_risk",
+      "path": "embedded:epidemiology_catalogs.ukhsa_terrestrial_mammal_rabies_country_risk_v1",
+      "purpose": "Maps selected country or territory to the UKHSA terrestrial mammal rabies risk level and normalized risk code. Bat lyssavirus risk is excluded and handled separately, with Australia explicitly surfaced as a special bat lyssavirus context."
+    }
+  ],
+  "decision_support": {
+    "id": "who_searo_rpep_decision_support_v1",
+    "title": "WHO SEARO Rabies PEP executable decision logic overlay",
+    "version": "1.0.0",
+    "source": {
+      "key": "who",
+      "title": "WHO SEARO Rabies Post-Exposure Prophylaxis Decision Tree",
+      "scope_note": "Encodes the decision branches represented in the WHO SEARO RPEP decision tree. This overlay should be treated as decision support, with local policy and clinical/public health review where required."
+    },
+    "design_principles": [
+      "Keep rabies_intake_v2 question schema stable.",
+      "Use this object as the executable decision layer over the existing intake fields.",
+      "Evaluate rules in priority order; the first terminal rule matched should drive the headline recommendation.",
+      "Derived fields may suppress redundant UI questions, but the original WHO source questions are retained for audit and manual override.",
+      "Unknown values should generally keep the user in the conservative branch unless a terminal no-PEP condition is explicit."
+    ],
+    "outcome_catalog": [
+      {
+        "code": "NO_PEP_WASH_ONLY",
+        "severity": "green",
+        "headline": "RPEP not indicated. Wash exposed areas with soap and water.",
+        "actions": [
+          "Wash exposed areas thoroughly with soap and water; apply antiseptic if applicable.",
+          "Document rationale."
+        ]
+      },
+      {
+        "code": "PEP_NOT_INDICATED_OR_DISCONTINUE",
+        "severity": "green",
+        "headline": "RPEP not indicated / can be discontinued.",
+        "actions": [
+          "Wash exposed areas with soap and water if not already done.",
+          "Document rationale and animal status."
+        ]
+      },
+      {
+        "code": "START_PEP_IMMEDIATELY",
+        "severity": "red",
+        "headline": "Start RPEP immediately.",
+        "actions": [
+          "Perform wound washing.",
+          "Start anti-rabies vaccine according to schedule.",
+          "Assess need for RIG/RmAbs if WHO category III and not previously vaccinated."
+        ]
+      },
+      {
+        "code": "DELAY_PEP_PENDING_INVESTIGATION",
+        "severity": "amber",
+        "headline": "Delay RPEP pending investigation / quarantine results.",
+        "actions": [
+          "Ensure animal investigation/quarantine/testing is arranged.",
+          "Reassess immediately if animal status changes or new information emerges.",
+          "Start PEP if investigation becomes concerning or unavailable."
+        ]
+      },
+      {
+        "code": "CATEGORY_I_NO_PEP",
+        "severity": "green",
+        "headline": "WHO category I: no RPEP indicated. Wash exposed areas with soap and water.",
+        "actions": [
+          "Wash exposed areas.",
+          "Document category I exposure."
+        ]
+      },
+      {
+        "code": "CATEGORY_II_WOUND_WASH_ARV",
+        "severity": "orange",
+        "headline": "WHO category II: wound washing and anti-rabies vaccine.",
+        "actions": [
+          "Wash wound thoroughly.",
+          "Give anti-rabies vaccine unless recent completed PEP branch applies."
+        ]
+      },
+      {
+        "code": "CATEGORY_II_PRIOR_VACCINATION_ARV_SHORTENED",
+        "severity": "orange",
+        "headline": "WHO category II: wound washing and anti-rabies vaccine; shorten schedule if prior PrEP/PEP applies.",
+        "actions": [
+          "Wash wound thoroughly.",
+          "Give ARV using shortened schedule according to prior vaccination guidance/local policy."
+        ]
+      },
+      {
+        "code": "CATEGORY_III_WOUND_WASH_RIG_RMABS_ARV",
+        "severity": "red",
+        "headline": "WHO category III: wound washing, RIG/RmAbs, and anti-rabies vaccine immediately.",
+        "actions": [
+          "Wash wound thoroughly.",
+          "Give anti-rabies vaccine immediately.",
+          "Infiltrate RIG/RmAbs into/around wounds when indicated and available."
+        ]
+      },
+      {
+        "code": "CATEGORY_III_PRIOR_VACCINATION_ARV_SHORTENED_NO_RIG",
+        "severity": "orange",
+        "headline": "WHO category III with prior rabies vaccination: wound washing and anti-rabies vaccine; RIG/RmAbs usually not indicated.",
+        "actions": [
+          "Wash wound thoroughly.",
+          "Give shortened ARV schedule according to prior vaccination guidance/local policy."
+        ]
+      },
+      {
+        "code": "CATEGORY_III_RIG_LIMITED_PRIORITIZATION",
+        "severity": "red",
+        "headline": "WHO category III with limited RIG/RmAbs: prioritize RIG/RmAbs for high-risk patients/exposures.",
+        "actions": [
+          "Wash wound thoroughly.",
+          "Give anti-rabies vaccine.",
+          "Use RIG/RmAbs if available; prioritize if patient is high-risk under WHO footnote 9."
+        ]
+      },
+      {
+        "code": "INSUFFICIENT_INFORMATION",
+        "severity": "grey",
+        "headline": "Insufficient information to produce a final RPEP recommendation.",
+        "actions": [
+          "Complete missing intake fields.",
+          "Use conservative public health/clinical review if exposure may be category II/III or animal risk is unknown."
+        ]
+      }
+    ],
+    "derived_field_rules": [
+      {
+        "id": "derive_animal_is_bat",
+        "sets": "animal_is_bat",
+        "when": {
+          "field": "c04",
+          "in": [
+            "bat_vampire",
+            "bat_other_or_unknown"
+          ]
+        },
+        "value": true
+      },
+      {
+        "id": "derive_animal_is_rodent",
+        "sets": "animal_is_rodent",
+        "when": {
+          "field": "c04",
+          "in": [
+            "large_rodent",
+            "small_rodent"
+          ]
+        },
+        "value": true
+      },
+      {
+        "id": "derive_animal_is_dog_cat_ferret",
+        "sets": "animal_is_dog_cat_or_domestic_ferret",
+        "when": {
+          "field": "c04",
+          "in": [
+            "dog_domestic_owned",
+            "dog_stray_free_roaming",
+            "dog_feral_wild",
+            "dog_unknown_status",
+            "cat_domestic_owned",
+            "cat_stray_free_roaming",
+            "cat_feral_wild",
+            "cat_unknown_status",
+            "domestic_ferret"
+          ]
+        },
+        "value": true
+      },
+      {
+        "id": "derive_animal_is_non_mammal_from_w01",
+        "sets": "animal_is_non_mammal",
+        "when": {
+          "field": "w01",
+          "equals": "no"
+        },
+        "value": true
+      },
+      {
+        "id": "derive_wound_category_iii_from_bat",
+        "sets": "w05",
+        "when": {
+          "derived": "animal_is_bat",
+          "equals": true
+        },
+        "value": "category_iii",
+        "confidence": "who_explicit"
+      },
+      {
+        "id": "derive_w04_from_anatomic_sites",
+        "sets": "w04",
+        "when": {
+          "field": "c13",
+          "overlaps": [
+            "head",
+            "face",
+            "neck",
+            "hands",
+            "genitals"
+          ]
+        },
+        "value": "yes"
+      }
+    ],
+    "ui_visibility_rules": [
+      {
+        "id": "hide_w01_if_c04_implies_mammal",
+        "hide_field": "w01",
+        "when": {
+          "field": "c04",
+          "in": [
+            "dog_domestic_owned",
+            "dog_stray_free_roaming",
+            "dog_feral_wild",
+            "dog_unknown_status",
+            "cat_domestic_owned",
+            "cat_stray_free_roaming",
+            "cat_feral_wild",
+            "cat_unknown_status",
+            "domestic_ferret",
+            "bat_vampire",
+            "bat_other_or_unknown",
+            "wild_canid_fox_jackal_wolf_coyote",
+            "raccoon_dog",
+            "mongoose_meerkat",
+            "skunk_mephitid",
+            "raccoon_procyonid",
+            "ferret_badger",
+            "mustelid_other",
+            "wild_felid",
+            "viverrid_civet_genet",
+            "hyena_aardwolf",
+            "bear",
+            "other_wild_carnivore",
+            "livestock_ruminant",
+            "equid",
+            "pig_suid",
+            "wild_ungulate_large_herbivore",
+            "nonhuman_primate",
+            "large_rodent",
+            "small_rodent",
+            "rabbit_hare",
+            "shrew_mole_hedgehog",
+            "marsupial",
+            "xenarthran",
+            "marine_mammal",
+            "captive_zoo_exotic_mammal",
+            "other_mammal"
+          ]
+        },
+        "derive": {
+          "w01": "yes"
+        }
+      },
+      {
+        "id": "hide_w02_if_c04_implies_rodent",
+        "hide_field": "w02",
+        "when": {
+          "field": "c04",
+          "in": [
+            "large_rodent",
+            "small_rodent"
+          ]
+        },
+        "derive": {
+          "w02": "yes"
+        }
+      },
+      {
+        "id": "hide_w02_if_c04_implies_non_rodent_mammal",
+        "hide_field": "w02",
+        "when": {
+          "field": "c04",
+          "not_in": [
+            "large_rodent",
+            "small_rodent",
+            "unknown"
+          ]
+        },
+        "derive": {
+          "w02": "no"
+        }
+      },
+      {
+        "id": "hide_w04_if_c13_contains_highly_innervated_site",
+        "hide_field": "w04",
+        "when": {
+          "field": "c13",
+          "overlaps": [
+            "head",
+            "face",
+            "neck",
+            "hands",
+            "genitals"
+          ]
+        },
+        "derive": {
+          "w04": "yes"
+        }
+      },
+      {
+        "id": "hide_c12_if_w05_already_selected",
+        "hide_field": "c12",
+        "when": {
+          "field": "w05",
+          "in": [
+            "category_i",
+            "category_ii",
+            "category_iii"
+          ]
+        },
+        "note": "c12 is supporting/audit detail and should not block decision output if WHO wound category is already selected."
+      }
+    ],
+    "terminal_rules": [
+      {
+        "id": "R01_non_mammal",
+        "priority": 10,
+        "when": {
+          "field": "w01",
+          "equals": "no"
+        },
+        "outcome": "NO_PEP_WASH_ONLY",
+        "rationale": "Species not susceptible for rabies."
+      },
+      {
+        "id": "R02_rodent",
+        "priority": 20,
+        "when": {
+          "any": [
+            {
+              "field": "w02",
+              "equals": "yes"
+            },
+            {
+              "derived": "animal_is_rodent",
+              "equals": true
+            }
+          ]
+        },
+        "outcome": "NO_PEP_WASH_ONLY",
+        "rationale": "Rodents rarely transmit rabies."
+      },
+      {
+        "id": "R03_bat_start_immediately",
+        "priority": 25,
+        "when": {
+          "derived": "animal_is_bat",
+          "equals": true
+        },
+        "outcome": "START_PEP_IMMEDIATELY",
+        "rationale": "WHO note: if exposure was to a bat, PEP for WHO wound category III should be started immediately."
+      },
+      {
+        "id": "R04_exposure_gt10d_animal_alive",
+        "priority": 30,
+        "when": {
+          "all": [
+            {
+              "field": "w03",
+              "equals": "yes"
+            },
+            {
+              "field": "c14",
+              "equals": "yes"
+            }
+          ]
+        },
+        "outcome": "PEP_NOT_INDICATED_OR_DISCONTINUE",
+        "rationale": "If exposure was more than 10 days ago and the animal is still alive, PEP is not indicated/can be discontinued; use species/local policy caveat for non-dog/cat/ferret animals."
+      },
+      {
+        "id": "R05_high_priority_features",
+        "priority": 40,
+        "when": {
+          "any": [
+            {
+              "field": "c15",
+              "equals": "yes"
+            },
+            {
+              "field": "c16",
+              "equals": "yes"
+            },
+            {
+              "field": "w04",
+              "equals": "yes"
+            }
+          ]
+        },
+        "outcome": "START_PEP_IMMEDIATELY",
+        "rationale": "WHO immediate-start branch for victim age <14, multiple/deep wounds, or highly innervated wound sites."
+      },
+      {
+        "id": "R06_test_positive",
+        "priority": 50,
+        "when": {
+          "all": [
+            {
+              "field": "c23",
+              "equals": "yes"
+            },
+            {
+              "field": "c24",
+              "equals": "positive"
+            }
+          ]
+        },
+        "outcome": "START_PEP_IMMEDIATELY",
+        "rationale": "Animal test positive."
+      },
+      {
+        "id": "R07_test_pending_or_inconclusive",
+        "priority": 60,
+        "when": {
+          "all": [
+            {
+              "field": "c23",
+              "equals": "yes"
+            },
+            {
+              "field": "c24",
+              "in": [
+                "pending",
+                "inconclusive"
+              ]
+            }
+          ]
+        },
+        "outcome": "START_PEP_IMMEDIATELY",
+        "rationale": "Animal test pending or inconclusive."
+      },
+      {
+        "id": "R08_test_negative",
+        "priority": 70,
+        "when": {
+          "all": [
+            {
+              "field": "c23",
+              "equals": "yes"
+            },
+            {
+              "field": "c24",
+              "equals": "negative"
+            }
+          ]
+        },
+        "outcome": "PEP_NOT_INDICATED_OR_DISCONTINUE",
+        "rationale": "Animal test negative; reassess if new information emerges."
+      },
+      {
+        "id": "R09_concerning_animal_features",
+        "priority": 80,
+        "when": {
+          "any": [
+            {
+              "field": "c18",
+              "equals": "yes"
+            },
+            {
+              "field": "c19",
+              "equals": "yes"
+            },
+            {
+              "field": "c20",
+              "equals": "yes"
+            }
+          ]
+        },
+        "outcome": "START_PEP_IMMEDIATELY",
+        "rationale": "Animal showed signs consistent with rabies, died/disappeared within 10 days, or bit 2 or more people/animals."
+      },
+      {
+        "id": "R10_animal_unavailable",
+        "priority": 90,
+        "when": {
+          "field": "c25",
+          "in": [
+            "no",
+            "unknown"
+          ]
+        },
+        "outcome": "START_PEP_IMMEDIATELY",
+        "rationale": "Animal not available for investigation/quarantine/testing."
+      },
+      {
+        "id": "R11_available_vaccinated_no_recent_risk",
+        "priority": 100,
+        "when": {
+          "all": [
+            {
+              "field": "c25",
+              "equals": "yes"
+            },
+            {
+              "field": "c26",
+              "equals": "yes"
+            },
+            {
+              "field": "c27",
+              "equals": "no"
+            }
+          ]
+        },
+        "outcome": "DELAY_PEP_PENDING_INVESTIGATION",
+        "rationale": "Animal available, up-to-date on vaccination, and no rabies-risk exposure in last 12 months."
+      },
+      {
+        "id": "R12_available_vaccinated_recent_or_unknown_risk",
+        "priority": 110,
+        "when": {
+          "all": [
+            {
+              "field": "c25",
+              "equals": "yes"
+            },
+            {
+              "field": "c26",
+              "equals": "yes"
+            },
+            {
+              "field": "c27",
+              "in": [
+                "yes",
+                "unknown"
+              ]
+            }
+          ]
+        },
+        "outcome": "DELAY_PEP_PENDING_INVESTIGATION",
+        "rationale": "Animal available and vaccinated, but recent rabies-risk exposure is yes/unknown; quarantine/investigation should determine need."
+      },
+      {
+        "id": "R13_available_not_vaccinated_or_unknown_vaccination_provoked",
+        "priority": 120,
+        "when": {
+          "all": [
+            {
+              "field": "c25",
+              "equals": "yes"
+            },
+            {
+              "field": "c26",
+              "in": [
+                "no",
+                "unknown"
+              ]
+            },
+            {
+              "field": "c28",
+              "equals": "yes"
+            }
+          ]
+        },
+        "outcome": "DELAY_PEP_PENDING_INVESTIGATION",
+        "rationale": "Animal available and bite/scratch was provoked; delay pending investigation/quarantine results."
+      },
+      {
+        "id": "R14_available_not_vaccinated_or_unknown_vaccination_unprovoked_or_unknown",
+        "priority": 130,
+        "when": {
+          "all": [
+            {
+              "field": "c25",
+              "equals": "yes"
+            },
+            {
+              "field": "c26",
+              "in": [
+                "no",
+                "unknown"
+              ]
+            },
+            {
+              "field": "c28",
+              "in": [
+                "no",
+                "unknown"
+              ]
+            }
+          ]
+        },
+        "outcome": "START_PEP_IMMEDIATELY",
+        "rationale": "Animal available but vaccination not up to date/unknown and provocation is no/unknown."
+      },
+      {
+        "id": "R15_category_i",
+        "priority": 200,
+        "when": {
+          "field": "w05",
+          "equals": "category_i"
+        },
+        "outcome": "CATEGORY_I_NO_PEP",
+        "rationale": "WHO wound category I."
+      },
+      {
+        "id": "R16_category_ii_completed_pep_less_than_3_months",
+        "priority": 210,
+        "when": {
+          "all": [
+            {
+              "field": "w05",
+              "equals": "category_ii"
+            },
+            {
+              "field": "c37",
+              "equals": "no"
+            },
+            {
+              "field": "c30",
+              "equals": "yes"
+            }
+          ]
+        },
+        "outcome": "NO_PEP_WASH_ONLY",
+        "rationale": "Category II pathway: completed PEP less than 3 months ago and not immunocompromised."
+      },
+      {
+        "id": "R17_category_ii_prior_vaccination",
+        "priority": 220,
+        "when": {
+          "all": [
+            {
+              "field": "w05",
+              "equals": "category_ii"
+            },
+            {
+              "field": "c37",
+              "equals": "no"
+            },
+            {
+              "field": "c29",
+              "equals": "yes"
+            }
+          ]
+        },
+        "outcome": "CATEGORY_II_PRIOR_VACCINATION_ARV_SHORTENED",
+        "rationale": "Category II pathway with prior PrEP/PEP."
+      },
+      {
+        "id": "R18_category_ii_default_or_immunocompromised",
+        "priority": 230,
+        "when": {
+          "field": "w05",
+          "equals": "category_ii"
+        },
+        "outcome": "CATEGORY_II_WOUND_WASH_ARV",
+        "rationale": "Category II default branch: wound washing and ARV."
+      },
+      {
+        "id": "R19_category_iii_completed_pep_less_than_3_months",
+        "priority": 240,
+        "when": {
+          "all": [
+            {
+              "field": "w05",
+              "equals": "category_iii"
+            },
+            {
+              "field": "c37",
+              "equals": "no"
+            },
+            {
+              "field": "c30",
+              "equals": "yes"
+            }
+          ]
+        },
+        "outcome": "NO_PEP_WASH_ONLY",
+        "rationale": "Category III pathway: completed PEP less than 3 months ago and not immunocompromised."
+      },
+      {
+        "id": "R20_category_iii_prior_vaccination",
+        "priority": 250,
+        "when": {
+          "all": [
+            {
+              "field": "w05",
+              "equals": "category_iii"
+            },
+            {
+              "field": "c37",
+              "equals": "no"
+            },
+            {
+              "field": "c29",
+              "equals": "yes"
+            }
+          ]
+        },
+        "outcome": "CATEGORY_III_PRIOR_VACCINATION_ARV_SHORTENED_NO_RIG",
+        "rationale": "Category III pathway with prior PrEP/PEP."
+      },
+      {
+        "id": "R21_category_iii_rig_limited_high_risk",
+        "priority": 260,
+        "when": {
+          "all": [
+            {
+              "field": "w05",
+              "equals": "category_iii"
+            },
+            {
+              "field": "c44",
+              "equals": "yes"
+            },
+            {
+              "field": "w06",
+              "equals": "yes"
+            }
+          ]
+        },
+        "outcome": "CATEGORY_III_RIG_LIMITED_PRIORITIZATION",
+        "rationale": "RIG/RmAbs availability limited and patient/exposure is high-risk under WHO footnote 9."
+      },
+      {
+        "id": "R22_category_iii_default",
+        "priority": 270,
+        "when": {
+          "field": "w05",
+          "equals": "category_iii"
+        },
+        "outcome": "CATEGORY_III_WOUND_WASH_RIG_RMABS_ARV",
+        "rationale": "Category III default branch."
+      },
+      {
+        "id": "R99_insufficient_information",
+        "priority": 999,
+        "when": {
+          "always": true
+        },
+        "outcome": "INSUFFICIENT_INFORMATION",
+        "rationale": "No terminal rule matched."
+      }
+    ],
+    "implementation_notes": [
+      "The UI must not render the questions array as a dumb flat form. It should evaluate derived_field_rules and ui_visibility_rules on each answer change.",
+      "The decision summary card should always show: current outcome, matched rule id, matched rationale, required missing fields for next decision, and source note.",
+      "Question ids shown to users should be hidden. Render clinical labels only; do not show c04_species_detail or response_type tokens as visible UI chrome.",
+      "For demo safety, include a banner that this is WHO SEARO-aligned decision support and must be reconciled with local public health policy."
+    ],
+    "test_cases": [
+      {
+        "id": "T01_non_mammal",
+        "answers": {
+          "w01": "no"
+        },
+        "expected_outcome": "NO_PEP_WASH_ONLY"
+      },
+      {
+        "id": "T02_rodent_from_species",
+        "answers": {
+          "c04": "small_rodent"
+        },
+        "expected_derived": {
+          "w01": "yes",
+          "w02": "yes"
+        },
+        "expected_outcome": "NO_PEP_WASH_ONLY"
+      },
+      {
+        "id": "T03_gt10_alive",
+        "answers": {
+          "w01": "yes",
+          "w02": "no",
+          "w03": "yes",
+          "c14": "yes"
+        },
+        "expected_outcome": "PEP_NOT_INDICATED_OR_DISCONTINUE"
+      },
+      {
+        "id": "T04_child_immediate",
+        "answers": {
+          "w01": "yes",
+          "w02": "no",
+          "w03": "no",
+          "c15": "yes"
+        },
+        "expected_outcome": "START_PEP_IMMEDIATELY"
+      },
+      {
+        "id": "T05_bat_immediate_category_iii",
+        "answers": {
+          "c04": "bat_other_or_unknown"
+        },
+        "expected_derived": {
+          "animal_is_bat": true,
+          "w05": "category_iii"
+        },
+        "expected_outcome": "START_PEP_IMMEDIATELY"
+      },
+      {
+        "id": "T06_test_negative",
+        "answers": {
+          "w01": "yes",
+          "w02": "no",
+          "c23": "yes",
+          "c24": "negative"
+        },
+        "expected_outcome": "PEP_NOT_INDICATED_OR_DISCONTINUE"
+      },
+      {
+        "id": "T07_category_i",
+        "answers": {
+          "w05": "category_i"
+        },
+        "expected_outcome": "CATEGORY_I_NO_PEP"
+      },
+      {
+        "id": "T08_category_iii_default",
+        "answers": {
+          "w05": "category_iii",
+          "c37": "no",
+          "c29": "no",
+          "c30": "no",
+          "c44": "no"
+        },
+        "expected_outcome": "CATEGORY_III_WOUND_WASH_RIG_RMABS_ARV"
+      }
+    ]
+  }
+}

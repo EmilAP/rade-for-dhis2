@@ -1,0 +1,22 @@
+.container {
+    max-width: 560px;
+    padding: 32px 24px;
+}
+
+.title {
+    margin: 0 0 24px 0;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--colors-grey900);
+}
+
+.code {
+    background-color: var(--colors-grey100);
+    border: 1px solid var(--colors-grey300);
+    border-radius: 4px;
+    padding: 12px;
+    font-size: 12px;
+    overflow-x: auto;
+    white-space: pre;
+}

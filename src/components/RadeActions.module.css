@@ -1,0 +1,72 @@
+.card {
+    padding: 24px;
+}
+
+.heading {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--colors-grey900);
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.error {
+    padding: 12px;
+    background-color: var(--colors-red050);
+    border: 1px solid var(--colors-red200);
+    border-radius: 4px;
+    color: var(--colors-red800);
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.result {
+    padding: 12px;
+    background-color: var(--colors-grey050);
+    border: 1px solid var(--colors-grey300);
+    border-radius: 4px;
+}
+
+.resultHeading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--colors-grey800);
+}
+
+.resultList {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 4px 12px;
+    font-size: 13px;
+    margin: 0;
+}
+
+.resultList dt {
+    font-weight: 500;
+    color: var(--colors-grey700);
+}
+
+.resultList dd {
+    margin: 0;
+    color: var(--colors-grey600);
+}
+
+.mono {
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.hint {
+    margin: 12px 0 0 0;
+    font-size: 13px;
+    color: var(--colors-grey500);
+}

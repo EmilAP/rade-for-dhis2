@@ -56,7 +56,7 @@ npm run start:force -- --proxy http://localhost:8080 --proxyPort 8082
 
 ## Known non-blocking warnings
 
-Build output may include App Platform dependency warnings such as `punycode` deprecation notices and chunk-size warnings. These are known review-time warnings and do not currently block the app build.
+Install/build output may include DHIS2 App Platform dependency warnings such as npm audit findings in transitive build/UI packages, `punycode` deprecation notices, and chunk-size warnings. A conservative dependency refresh has been applied, but some remaining warnings are inside the current DHIS2 App Platform/UI toolchain and should not be forced with `npm audit fix --force` unless the app is retested carefully afterward.
 
 ## Development behavior
 

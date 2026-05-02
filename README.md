@@ -66,7 +66,7 @@ yarn build
 yarn test --watchAll=false
 ```
 
-Known non-blocking build output may include App Platform dependency deprecation warnings, including `punycode`, and chunk-size warnings from bundled app assets.
+Known non-blocking toolchain output may include App Platform dependency deprecation warnings, including `punycode`, Vite chunk-size warnings from bundled app assets, and npm audit findings in transitive DHIS2 App Platform/UI build dependencies. The app has no external AI service and does not store DHIS2 credentials in frontend code.
 
 ## Install Into DHIS2 App Management
 
